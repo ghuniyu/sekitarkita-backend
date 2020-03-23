@@ -50,8 +50,8 @@ class DeviceController extends Controller
             DB::rollback();
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
-                'stack_trace' => $e->getTraceAsString()
+                'message' => env('APP_ENV') == 'local' ? $e->getMessage() : 'duplicate',
+                'stack_trace' => env('APP_ENV') == 'local' ? $e->getTraceAsString() : 'duplicate'
             ]);
         }
     }
@@ -135,8 +135,8 @@ class DeviceController extends Controller
             DB::rollback();
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
-                'stack_trace' => $e->getTraceAsString()
+                'message' => env('APP_ENV') == 'local' ? $e->getMessage() : 'duplicate',
+                'stack_trace' => env('APP_ENV') == 'local' ? $e->getTraceAsString() : 'duplicate'
             ]);
         }
     }
