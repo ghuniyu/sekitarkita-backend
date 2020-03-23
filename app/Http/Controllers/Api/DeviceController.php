@@ -97,9 +97,14 @@ class DeviceController extends Controller
                 'device' => $device
             ]);
         } else {
+            Device::create([
+                'id' => $valid['device_id'],
+                'health_condition' => $valid['health']
+            ]);
+
             return response()->json([
-                'success' => false,
-                'message' => 'Unknown Device ID'
+                'success' => true,
+                'device' => Device::find($valid['device_id'])
             ]);
         }
     }
