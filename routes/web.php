@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/landing');
 });
+
+Route::get('/download', function ($id) {
+    return redirect('/public/sekitarkita.apk');
+});
