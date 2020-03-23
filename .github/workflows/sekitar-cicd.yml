@@ -2,7 +2,7 @@ name: Production Server Deployment
 
 on:
   push:
-    branches: [ development ]
+    branches: [ master ]
 
 jobs:
 
