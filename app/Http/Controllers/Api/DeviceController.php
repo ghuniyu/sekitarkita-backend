@@ -16,8 +16,8 @@ class DeviceController extends Controller
         $valid = $this->validate($request, [
             'device_id' => 'required|string|max:64',
             'nearby_device' => 'required|string|max:64',
-            'latitude' => 'nullable|regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/',
-            'longitude' => 'nullable|regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
         $valid['device_id'] = Str::lower($valid['device_id']);
