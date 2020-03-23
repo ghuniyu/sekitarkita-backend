@@ -1,0 +1,20 @@
+name: Production Server Deployment
+
+on:
+  push:
+    branches: [ development ]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Production Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          port: 22
+          script: cd ~ && sh sekitarDeployer.sh
