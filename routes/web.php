@@ -17,6 +17,6 @@ Route::get('/', function () {
     return redirect('/landing');
 });
 
-Route::get('/download', function ($id) {
+Route::get('/download', function () {
     return redirect('/sekitarkita.apk');
 });
