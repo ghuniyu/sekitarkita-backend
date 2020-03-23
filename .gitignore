@@ -5,6 +5,7 @@
 /storage/*.key
 /vendor
 /.idea/**
+*.apk
 .env
 .env.save
 .env.backup
