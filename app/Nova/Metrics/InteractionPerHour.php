@@ -4,11 +4,11 @@ namespace App\Nova\Metrics;
 
 use App\Models\Nearby;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Metrics\Value;
+use Laravel\Nova\Metrics\Trend;
 
-class NearbyDevices extends Value
+class InteractionPerHour extends Trend
 {
-    public $name = 'Interaksi Tercatat';
+    public $name = 'Interaksi Per Jam';
     /**
      * Calculate the value of the metric.
      *
@@ -17,7 +17,7 @@ class NearbyDevices extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->count($request, Nearby::class);
+        return $this->countByHours($request, Nearby::class);
     }
 
     /**
@@ -28,13 +28,10 @@ class NearbyDevices extends Value
     public function ranges()
     {
         return [
-            30 => '30 Days',
-            60 => '60 Days',
-            365 => '365 Days',
-            'TODAY' => 'Today',
-            'MTD' => 'Month To Date',
-            'QTD' => 'Quarter To Date',
-            'YTD' => 'Year To Date',
+            12 => '12 Hour',
+            24 => '24 Hour',
+            48 => '48 Days',
+            96 => '96 Days',
         ];
     }
 
@@ -55,6 +52,6 @@ class NearbyDevices extends Value
      */
     public function uriKey()
     {
-        return 'nearby-devices';
+        return 'interaction-per-hour';
     }
 }

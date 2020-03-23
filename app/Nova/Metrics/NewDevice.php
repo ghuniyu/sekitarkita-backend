@@ -2,13 +2,13 @@
 
 namespace App\Nova\Metrics;
 
-use App\Models\Nearby;
+use App\Models\Device;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Metrics\Value;
 
-class NearbyDevices extends Value
+class NewDevice extends Value
 {
-    public $name = 'Interaksi Tercatat';
+    public $name = 'Device Baru';
     /**
      * Calculate the value of the metric.
      *
@@ -17,7 +17,7 @@ class NearbyDevices extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->count($request, Nearby::class);
+        return $this->count($request, Device::class);
     }
 
     /**
@@ -55,6 +55,6 @@ class NearbyDevices extends Value
      */
     public function uriKey()
     {
-        return 'nearby-devices';
+        return 'new-device';
     }
 }

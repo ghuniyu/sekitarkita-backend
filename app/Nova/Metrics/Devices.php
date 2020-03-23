@@ -8,7 +8,7 @@ use Laravel\Nova\Metrics\Value;
 
 class Devices extends Value
 {
-    public $name = 'Devices Associated';
+    public $name = 'Device Tercatat';
     /**
      * Calculate the value of the metric.
      *

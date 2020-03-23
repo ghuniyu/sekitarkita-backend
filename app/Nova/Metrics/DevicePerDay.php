@@ -2,13 +2,13 @@
 
 namespace App\Nova\Metrics;
 
-use App\Models\Nearby;
+use App\Models\Device;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Metrics\Value;
+use Laravel\Nova\Metrics\Trend;
 
-class NearbyDevices extends Value
+class DevicePerDay extends Trend
 {
-    public $name = 'Interaksi Tercatat';
+    public $name = 'Device Per Hari';
     /**
      * Calculate the value of the metric.
      *
@@ -17,7 +17,7 @@ class NearbyDevices extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->count($request, Nearby::class);
+        return $this->countByDays($request, Device::class);
     }
 
     /**
@@ -28,13 +28,10 @@ class NearbyDevices extends Value
     public function ranges()
     {
         return [
+            10 => '10 Days',
             30 => '30 Days',
             60 => '60 Days',
-            365 => '365 Days',
-            'TODAY' => 'Today',
-            'MTD' => 'Month To Date',
-            'QTD' => 'Quarter To Date',
-            'YTD' => 'Year To Date',
+            90 => '90 Days',
         ];
     }
 
@@ -55,6 +52,6 @@ class NearbyDevices extends Value
      */
     public function uriKey()
     {
-        return 'nearby-devices';
+        return 'device-per-day';
     }
 }

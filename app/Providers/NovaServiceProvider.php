@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+use App\Nova\Metrics\DevicePerDay;
 use App\Nova\Metrics\Devices;
 use App\Nova\Metrics\HealthyUser;
+use App\Nova\Metrics\InteractionPerDay;
+use App\Nova\Metrics\InteractionPerHour;
 use App\Nova\Metrics\NearbyDevices;
+use App\Nova\Metrics\NewDevice;
 use App\Nova\Metrics\ODPUser;
 use App\Nova\Metrics\PDPUser;
 use Illuminate\Support\Facades\Gate;
@@ -67,6 +71,11 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function cards()
     {
         return [
+            new InteractionPerHour,
+            new InteractionPerDay,
+            new DevicePerDay,
+
+            new NewDevice,
             new Devices,
             new NearbyDevices,
             new HealthyUser,
