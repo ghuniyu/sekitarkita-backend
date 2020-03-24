@@ -27,6 +27,8 @@ class DeviceController extends Controller
             DB::beginTransaction();
 
             $device = Device::find($valid['device_id']);
+            $nearby_device = Device::find($valid['nearby_device']);
+
             if (!$device) {
                 Device::create([
                     'id' => $valid['device_id']
@@ -44,7 +46,8 @@ class DeviceController extends Controller
             DB::commit();
             return response()->json([
                 'success' => true,
-                'message' => 'Nearby Stored'
+                'message' => 'Nearby Stored',
+                'nearby_device' => $nearby_device ?? null
             ]);
         } catch (\Exception $e) {
             DB::rollback();
