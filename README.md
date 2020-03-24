@@ -2,6 +2,7 @@
 
 <p align="center">
 <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+<a href="https://github.com/ghuniyu/sekitarkita-backend/actions"><img src="https://github.com/ghuniyu/sekitarkita-backend/workflows/Production%20Server%20Deployment/badge.svg?branch=master&event=push" alt="Deploy Status"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 

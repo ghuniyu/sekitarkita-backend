@@ -1,10 +1,14 @@
 /node_modules
 /public/hot
 /public/storage
+/public/landing
 /storage/*.key
 /vendor
 /.idea/**
+/public/web.config
+*.apk
 .env
+.env.save
 .env.backup
 .phpunit.result.cache
 Homestead.json
