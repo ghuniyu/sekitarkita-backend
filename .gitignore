@@ -5,6 +5,7 @@
 /storage/*.key
 /vendor
 /.idea/**
+/public/web.config
 *.apk
 .env
 .env.save
