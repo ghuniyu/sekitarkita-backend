@@ -42,6 +42,7 @@ class DeviceController extends Controller
                 'another_device' => $valid['nearby_device'],
                 'latitude' => $valid['latitude'] ?? null,
                 'longitude' => $valid['longitude'] ?? null,
+                'speed' => $valid['speed'],
             ]);
 
             DB::commit();
