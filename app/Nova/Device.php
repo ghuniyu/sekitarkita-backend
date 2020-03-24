@@ -27,6 +27,7 @@ class Device extends Resource
             Text::make(__('Device MAC'), 'id')
                 ->required()
                 ->sortable(),
+            Text::make(__('Nama Perangkat'), 'device_name'),
             Text::make('Label')
                 ->help('optional')
                 ->sortable(),
@@ -34,7 +35,7 @@ class Device extends Resource
                 ->help('optional')
                 ->sortable(),
             Select::make(__('Health Condition'), 'health_condition')
-                ->options(['healthy' => 'Sehat', 'pdp' => 'PDP', 'odp' => 'ODP'])
+                ->options(['healthy' => 'Sehat', 'pdp' => 'PDP', 'odp' => 'ODP', 'confirmed' => 'Positif'])
                 ->displayUsingLabels()
                 ->required()
                 ->sortable(),
