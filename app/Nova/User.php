@@ -10,6 +10,11 @@ use Laravel\Nova\Fields\Text;
 
 class User extends Resource
 {
+    public static function label()
+    {
+        return "Admin";
+    }
+
     /**
      * The model the resource corresponds to.
      *
