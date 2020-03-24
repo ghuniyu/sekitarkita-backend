@@ -21,5 +21,5 @@ Route::get('/download', function () {
     return redirect('/sekitarkita.apk');
 });
 
-Route::view('/mapping', 'mapping.device')->name('mapping.device');
-Route::view('/mapping-member', 'mapping.member')->name('mapping.member');
+//Route::view('/mapping-device', 'mapping.device')->name('mapping.device');
+Route::view('/mapping', 'mapping.member')->name('mapping.member');

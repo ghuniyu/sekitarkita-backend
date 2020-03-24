@@ -24,7 +24,7 @@
                         class="header-brand-img"
                         alt="tabler logo">
                 </a>
-                <div class="nav-item d-none d-md-flex">
+                {{--<div class="nav-item d-none d-md-flex">
                     <ul class="nav navbar-menu">
                         <li class="nav-item dropdown">
                             <a class="nav-link" data-toggle="dropdown"> Mapping <i class="mr-2 fe fe-chevron-down"></i></a>
@@ -34,7 +34,7 @@
                             </div>
                         </li>
                     </ul>
-                </div>
+                </div>--}}
             </div>
         </div>
     </div>
