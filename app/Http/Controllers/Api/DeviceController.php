@@ -18,6 +18,7 @@ class DeviceController extends Controller
             'nearby_device' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
+            'speed' => 'sometimes|nullable|numeric|min:0|max:100',
         ]);
 
         $valid['device_id'] = Str::lower($valid['device_id']);
@@ -27,6 +28,8 @@ class DeviceController extends Controller
             DB::beginTransaction();
 
             $device = Device::find($valid['device_id']);
+            $nearby_device = Device::find($valid['nearby_device']);
+
             if (!$device) {
                 Device::create([
                     'id' => $valid['device_id']
@@ -44,7 +47,8 @@ class DeviceController extends Controller
             DB::commit();
             return response()->json([
                 'success' => true,
-                'message' => 'Nearby Stored'
+                'message' => 'Nearby Stored',
+                'nearby_device' => $nearby_device ?? null
             ]);
         } catch (\Exception $e) {
             DB::rollback();
