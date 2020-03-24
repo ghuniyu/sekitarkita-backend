@@ -30,10 +30,10 @@ class InteractionPerDay extends Trend
     public function ranges()
     {
         return [
-            1 => '1 Hari',
             7 => '1 Minggu',
             14 => '2 Minggu',
             30 => '1 Bulan',
+            60 => '2 Bulan',
         ];
     }
 
