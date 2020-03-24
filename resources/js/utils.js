@@ -1,7 +1,10 @@
+window.visNetworkData = [];
+window.visNetworkRaw = [];
 window.visualNetwork =  visualNetwork = (url, customOptions = null, customScale = null) => {
     fetch(url)
         .then((res => res.json()))
         .then((data) => {
+            window.visNetworkRaw = data;
             function draw(data) {
                 const container = document.getElementById('network');
                 const options = customOptions ? customOptions : {
@@ -46,8 +49,7 @@ window.visualNetwork =  visualNetwork = (url, customOptions = null, customScale 
 
                     const scaleOption = {scale: customScale ? customScale : 0.05};
                     network.moveTo(scaleOption);
-                    // exportNetwork()
-
+                    exportNetwork()
                 });
 
 
@@ -67,9 +69,10 @@ window.visualNetwork =  visualNetwork = (url, customOptions = null, customScale 
                     const nodes = objectToArray(network.getPositions());
 
                     nodes.forEach(addConnections);
-
+                    window.visNetworkData = nodes;
+                    container.classList.add('done');
                     // pretty print node data
-                    console.log(JSON.stringify(nodes, undefined, 2));
+                    // console.log(JSON.stringify(nodes, undefined, 2));
                 }
 
             }

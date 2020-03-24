@@ -60,6 +60,14 @@ class MappingController extends Controller
                 return [
                     'id' => $n['id'],
                     'label' => $n['label'] ?? $n['id'],
+                    "font" => [
+                        "size" => 16,
+                        "multi" => "md",
+                        "align" => "center"
+                    ],
+                    "shape" => "image",
+                    "color" => "#97C2FC",
+                    "image" => '/images/icons/smartphone_' . $n['health_condition'] . '.svg'
                 ];
             });
 
@@ -68,7 +76,15 @@ class MappingController extends Controller
                     foreach ($device['nearbies'] as $nearby) {
                         $nodes->push([
                             'id' => $nearby['another_device'],
-                            'label' => $nearby['another_device']
+                            'label' => $nearby['another_device'],
+                            "font" => [
+                                "size" => 16,
+                                "multi" => "md",
+                                "align" => "center"
+                            ],
+                            "shape" => "image",
+                            "color" => "#97C2FC",
+                            "image" => '/images/icons/smartphone.svg'
                         ]);
                         $edges->push([
                             'from' => $device['id'],
