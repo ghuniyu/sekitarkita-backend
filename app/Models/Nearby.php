@@ -12,7 +12,8 @@ class Nearby extends Pivot
         'device_id',
         'another_device',
         'latitude',
-        'longitude'
+        'longitude',
+        'speed'
     ];
 
     public function device()
