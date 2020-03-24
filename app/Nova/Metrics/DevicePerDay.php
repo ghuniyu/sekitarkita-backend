@@ -28,10 +28,10 @@ class DevicePerDay extends Trend
     public function ranges()
     {
         return [
-            10 => '10 Days',
-            30 => '30 Days',
-            60 => '60 Days',
-            90 => '90 Days',
+            1 => '1 Hari',
+            7 => '1 Minggu',
+            14 => '2 Minggu',
+            30 => '1 Bulan',
         ];
     }
 
