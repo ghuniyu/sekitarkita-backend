@@ -18,6 +18,7 @@ class DeviceController extends Controller
             'nearby_device' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
+            'speed' => 'sometimes|nullable|numeric|min:0|max:100',
         ]);
 
         $valid['device_id'] = Str::lower($valid['device_id']);
