@@ -24,3 +24,6 @@ Route::get('/', function () {
         'message' => 'Hello Developer'
     ]);
 });
+Route::get('/member-interaction', 'Api\MappingController@associatedInteraction');
+Route::get('/device-interaction', 'Api\MappingController@recordedInteraction');
+
