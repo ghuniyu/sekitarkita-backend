@@ -36,7 +36,7 @@
                 stabilization: {
                     enabled: true,
                     fit: true,
-                    iterations: 1,
+                    iterations: 1000,
                     updateInterval: 25
                 }
             }
