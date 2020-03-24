@@ -1,4 +1,4 @@
-window.visualNetwork =  visualNetwork = (url, customOptions = null) => {
+window.visualNetwork =  visualNetwork = (url, customOptions = null, customScale = null) => {
     fetch(url)
         .then((res => res.json()))
         .then((data) => {
@@ -44,7 +44,7 @@ window.visualNetwork =  visualNetwork = (url, customOptions = null) => {
                         document.getElementById('networkLoadingBar').style.display = 'none';
                     }, 500);
 
-                    const scaleOption = {scale: 0.05};
+                    const scaleOption = {scale: customScale ? customScale : 0.05};
                     network.moveTo(scaleOption);
                     // exportNetwork()
 
