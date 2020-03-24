@@ -9,6 +9,7 @@ use App\Nova\Metrics\InteractionPerDay;
 use App\Nova\Metrics\InteractionPerHour;
 use App\Nova\Metrics\NearbyDevices;
 use App\Nova\Metrics\NewDevice;
+use App\Nova\Metrics\NewInteraction;
 use App\Nova\Metrics\ODPUser;
 use App\Nova\Metrics\PDPUser;
 use Illuminate\Support\Facades\Gate;
@@ -76,6 +77,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             new DevicePerDay,
 
             new NewDevice,
+            new NewInteraction,
+
             new Devices,
             new NearbyDevices,
             new HealthyUser,

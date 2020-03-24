@@ -14,8 +14,8 @@ class DeviceController extends Controller
     public function store(Request $request)
     {
         $valid = $this->validate($request, [
-            'device_id' => 'required|string|max:64',
-            'nearby_device' => 'required|string|max:64',
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+            'nearby_device' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
         ]);
@@ -59,7 +59,7 @@ class DeviceController extends Controller
     public function getNearby(Request $request)
     {
         $valid = $this->validate($request, [
-            'device_id' => 'required|string|max:64'
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/'
         ]);
 
         $valid['device_id'] = Str::lower($valid['device_id']);
@@ -81,7 +81,7 @@ class DeviceController extends Controller
     public function setHealth(Request $request)
     {
         $valid = $this->validate($request, [
-            'device_id' => 'required|string|max:64',
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
             'health' => 'required|in:healthy,pdp,odp'
         ]);
 
@@ -112,7 +112,7 @@ class DeviceController extends Controller
     public function storeFirebaseToken(Request $request)
     {
         $valid = $this->validate($request, [
-            'device_id' => 'required|string|max:64',
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
             'firebase_token' => 'required|string|min:32|max:256'
         ]);
 
@@ -149,7 +149,7 @@ class DeviceController extends Controller
     public function getMe(Request $request)
     {
         $valid = $this->validate($request, [
-            'device_id' => 'required|string|max:64',
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
         ]);
 
         $valid['device_id'] = Str::lower($valid['device_id']);
