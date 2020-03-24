@@ -19,6 +19,14 @@ class MappingController extends Controller
                 return [
                     'id' => $n['id'],
                     'label' => $n['label'] ?? $n['id'],
+                    "font" => [
+                        "size" => 16,
+                        "multi" => "md",
+                        "align" => "center"
+                    ],
+                    "shape" => "image",
+                    "color" => "#97C2FC",
+                    "image" => '/images/icons/smartphone_' . $n['health_condition'] . '.svg'
                 ];
             });
 
