@@ -12,10 +12,10 @@ use App\Nova\Metrics\NearbyDevices;
 use App\Nova\Metrics\NewDevice;
 use App\Nova\Metrics\NewInteraction;
 use App\Nova\Metrics\ODPUser;
+use App\Nova\Metrics\OnlineDevice;
 use App\Nova\Metrics\PDPUser;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Actions\ActionEvent;
-use Laravel\Nova\Cards\Help;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 
@@ -29,8 +29,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function boot()
     {
         ActionEvent::saving(function ($actionEvent) {
-            if(in_array($actionEvent->name, ['Create', 'Update', 'Delete']))
-                return false;
+            /*if(in_array($actionEvent->name, ['Create', 'Update', 'Delete']))
+                return false;*/
+            return false;
         });
 
         parent::boot();
@@ -73,6 +74,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function cards()
     {
         return [
+            new OnlineDevice,
             new InteractionPerMinutes,
             new InteractionPerHour,
             new InteractionPerDay,

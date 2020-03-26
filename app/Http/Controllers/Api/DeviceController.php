@@ -24,25 +24,27 @@ class DeviceController extends Controller
         $valid['device_id'] = Str::lower($valid['device_id']);
         $valid['nearby_device'] = Str::lower($valid['nearby_device']);
 
+        $device = Device::find($valid['device_id']);
+        $nearby_device = Device::find($valid['nearby_device']);
+
+        if (!$device) {
+            Device::create([
+                'id' => $valid['device_id']
+            ]);
+        }
+
+        $device = Device::find($valid['device_id']);
+        $device->touch();
+
         try {
             DB::beginTransaction();
 
-            $device = Device::find($valid['device_id']);
-            $nearby_device = Device::find($valid['nearby_device']);
-
-            if (!$device) {
-                Device::create([
-                    'id' => $valid['device_id']
-                ]);
-            }
-
-            $device = Device::find($valid['device_id']);
             Nearby::create([
                 'device_id' => $device['id'],
                 'another_device' => $valid['nearby_device'],
                 'latitude' => $valid['latitude'] ?? null,
                 'longitude' => $valid['longitude'] ?? null,
-                'speed' => $valid['speed'],
+                'speed' => $valid['speed'] ?? null,
             ]);
 
             DB::commit();
