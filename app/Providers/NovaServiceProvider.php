@@ -7,6 +7,7 @@ use App\Nova\Metrics\Devices;
 use App\Nova\Metrics\HealthyUser;
 use App\Nova\Metrics\InteractionPerDay;
 use App\Nova\Metrics\InteractionPerHour;
+use App\Nova\Metrics\InteractionPerMinutes;
 use App\Nova\Metrics\NearbyDevices;
 use App\Nova\Metrics\NewDevice;
 use App\Nova\Metrics\NewInteraction;
@@ -72,6 +73,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function cards()
     {
         return [
+            new InteractionPerMinutes,
             new InteractionPerHour,
             new InteractionPerDay,
             new DevicePerDay,

@@ -15,7 +15,6 @@
     ],
     "require": {
         "php": "^7.2.5",
-        "bref/bref": "^0.5.17",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "genealabs/nova-map-marker-field": "^0.1.15",
