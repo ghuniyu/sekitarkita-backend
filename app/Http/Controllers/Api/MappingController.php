@@ -4,15 +4,20 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Device;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class MappingController extends Controller
 {
-    public function associatedInteraction()
+    public function associatedInteraction(Request $request)
     {
+        $results = cache()->remember('associatedInteraction', now()->addHours(1), function () use ($request) {
+            if ($request->has('only')) {
+                $all = Device::where('health_condition', $request->get('only'))->with('nearbies')->get();
+            } else {
+                $all = Device::with('nearbies')->get();
+            }
 
-        $results = cache()->remember('associatedInteraction', now()->addHours(1), function () {
-            $all = Device::with('nearbies')->get();
             $edges = new Collection();
 
             $nodes = $all->map(function ($n) {

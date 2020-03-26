@@ -23,4 +23,6 @@ Route::get('/download', function () {
 
 Route::view('/mapping', 'mapping.device')->name('mapping.device');
 Route::view('/mapping-member', 'mapping.member')->name('mapping.member');
+Route::view('/mapping-pdp', 'mapping.pdp')->name('mapping.pdp');
+Route::view('/mapping-odp', 'mapping.odp')->name('mapping.odp');
 Route::view('/mapping-puppeteer', 'mapping.mapping-for-puppeteer');
