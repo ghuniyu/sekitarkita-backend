@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d7d76793be7f955b990cdc6eafa3a8cd",
+    "content-hash": "386c01848e91833d96b9c20607a5fca1",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -57,46 +57,6 @@
                 "stack"
             ],
             "time": "2019-12-24T22:41:47+00:00"
-        },
-        {
-            "name": "awt/apilogger",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/aungwinthant/apilogger.git",
-                "reference": "1b91ae400c5201509877b2774178433b376a8a6a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/aungwinthant/apilogger/zipball/1b91ae400c5201509877b2774178433b376a8a6a",
-                "reference": "1b91ae400c5201509877b2774178433b376a8a6a",
-                "shasum": ""
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "AWT\\Providers\\ApiLogServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "AWT\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "aung win thant",
-                    "email": "agwinthant@gmail.com"
-                }
-            ],
-            "description": "Small laravel package for viewing api logs which can be used in debugging.",
-            "time": "2020-03-11T06:26:29+00:00"
         },
         {
             "name": "brick/math",
@@ -7187,9 +7147,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "awt/apilogger": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
