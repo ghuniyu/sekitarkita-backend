@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect('/landing');
+    return redirect('https://landing.sekitarkita.id');
 });
 
 Route::get('/download', function () {
