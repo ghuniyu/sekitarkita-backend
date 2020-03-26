@@ -14,16 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('store-device', 'Api\DeviceController@store');
+Route::middleware('throttle:4,1')
+    ->post('store-device', 'Api\DeviceController@store');
+
 Route::post('me', 'Api\DeviceController@getMe');
 Route::post('store-firebase-token', 'Api\DeviceController@storeFirebaseToken');
 Route::post('device-history', 'Api\DeviceController@getNearby');
-Route::post('set-health', 'Api\DeviceController@setHealth');
+Route::middleware('throttle:1,720')
+    ->post('set-health', 'Api\DeviceController@setHealth');
+
 Route::get('/', function () {
     return response()->json([
         'message' => 'Hello Developer'
     ]);
 });
+
 Route::get('/member-interaction', 'Api\MappingController@associatedInteraction');
 Route::get('/device-interaction', 'Api\MappingController@recordedInteraction');
 
