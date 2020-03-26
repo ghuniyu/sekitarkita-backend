@@ -23,6 +23,6 @@ jobs:
         with:
           host: ${{ secrets.HOST_PROD2 }}
           username: ${{ secrets.USER }}
-          key: ${{ secrets.KEY }}
+          key: ${{ secrets.KEY_PROD2 }}
           port: 22
           script: cd ~ && sh sekitarDeployer.sh
