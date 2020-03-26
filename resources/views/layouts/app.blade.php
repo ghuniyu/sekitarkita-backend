@@ -31,6 +31,8 @@
                             <div class="dropdown-menu dropdown-menu-arrow">
                                 <a href="{{ route('mapping.member') }}" class="dropdown-item ">Member</a>
                                 <a href="{{ route('mapping.device') }}" class="dropdown-item ">Device</a>
+                                <a href="{{ route('mapping.pdp') }}" class="dropdown-item ">PDP</a>
+                                <a href="{{ route('mapping.odp') }}" class="dropdown-item ">ODP</a>
                             </div>
                         </li>
                     </ul>
