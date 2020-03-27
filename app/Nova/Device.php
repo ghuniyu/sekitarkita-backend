@@ -3,6 +3,8 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Date;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -33,6 +35,11 @@ class Device extends Resource
                 ->sortable(),
             Text::make(__('Telepon'), 'phone')
                 ->help('optional')
+                ->sortable(),
+            DateTime::make(__('Terakhir Online'), 'updated_at')
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->format("D-MM-Y hh:mm:ss")
                 ->sortable(),
             Select::make(__('Health Condition'), 'health_condition')
                 ->options(['healthy' => 'Sehat', 'pdp' => 'PDP', 'odp' => 'ODP', 'confirmed' => 'Positif'])
