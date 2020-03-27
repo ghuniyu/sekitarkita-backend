@@ -20,7 +20,7 @@ Route::middleware('throttle:4,1')
 Route::post('me', 'Api\DeviceController@getMe');
 Route::post('store-firebase-token', 'Api\DeviceController@storeFirebaseToken');
 Route::post('device-history', 'Api\DeviceController@getNearby');
-Route::middleware('throttle:1,720')
+Route::middleware('throttle:4,1')
     ->post('set-health', 'Api\DeviceController@setHealth');
 
 Route::get('/', function () {

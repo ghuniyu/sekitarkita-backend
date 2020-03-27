@@ -18,11 +18,9 @@ Route::get('/', function () {
 });
 
 Route::get('/download', function () {
-    return redirect('https://github.com/ghuniyu/sekitarkita-mobile/releases/latest/download/sekitarkita.apk');
+    return redirect('https://drive.google.com/file/d/1fM9JNaNZ_BQ18dZAKsgEh9X5weyb7WK3/view');
 });
 
 Route::view('/mapping', 'mapping.device')->name('mapping.device');
 Route::view('/mapping-member', 'mapping.member')->name('mapping.member');
-Route::view('/mapping-pdp', 'mapping.pdp')->name('mapping.pdp');
-Route::view('/mapping-odp', 'mapping.odp')->name('mapping.odp');
 Route::view('/mapping-puppeteer', 'mapping.mapping-for-puppeteer');
