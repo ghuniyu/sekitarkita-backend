@@ -60,8 +60,11 @@ class Nearby extends Resource
             BelongsTo::make('Device', 'device', Device::class)
                 ->required()
                 ->sortable(),
-            Text::make(__('Nearby Device'), "another_device")
+            Text::make(__('Device Sekitar'), "another_device")
                 ->required(),
+            Text::make(__('Nama Device'), "device_name")
+                ->hideWhenUpdating()
+                ->hideWhenCreating(),
             Number::make(__('Kecepatan'), 'speed'),
             MapMarker::make('Location')
                 ->hideFromIndex()
@@ -69,7 +72,8 @@ class Nearby extends Resource
                 ->defaultLongitude('107.609810')
                 ->rules(['required', 'numeric']),
             DateTime::make(__('On Date'), 'created_at')
-            ->hideWhenCreating(),
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
         ];
     }
 

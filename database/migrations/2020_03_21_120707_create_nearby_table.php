@@ -32,6 +32,6 @@ class CreateNearbyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('nearbies');
+        Schema::dropIfExists('nearby');
     }
 }

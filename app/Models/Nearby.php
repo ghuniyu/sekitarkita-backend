@@ -11,6 +11,7 @@ class Nearby extends Pivot
     protected $fillable = [
         'device_id',
         'another_device',
+        'device_name',
         'latitude',
         'longitude',
         'speed'
