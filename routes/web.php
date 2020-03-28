@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/download', function () {
-    return redirect('https://drive.google.com/file/d/1fM9JNaNZ_BQ18dZAKsgEh9X5weyb7WK3/view');
+    return redirect('https://sekitarkita-release.s3-ap-southeast-1.amazonaws.com/sekitarkita.apk');
 });
 
 Route::view('/mapping', 'mapping.device')->name('mapping.device');
