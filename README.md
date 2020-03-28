@@ -28,6 +28,8 @@ SekitarKita adalah open-sourced software yang berlisensi dibawah [MIT license](h
 'nearby_device' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
 'latitude' => 'nullable|numeric',
 'longitude' => 'nullable|numeric',
+'speed' => 'sometimes|nullable|numeric|min:0|max:100',
+'device_name' => 'sometimes|nullable|string|max:100',
 ```
 
 ## POST /me
