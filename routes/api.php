@@ -31,4 +31,5 @@ Route::get('/', function () {
 
 Route::get('/member-interaction', 'Api\MappingController@associatedInteraction');
 Route::get('/device-interaction', 'Api\MappingController@recordedInteraction');
-
+Route::get('/get-callcenters', 'Api\CallCenterController@getCallCenters');
+Route::get('/get-hospitals', 'Api\CallCenterController@getHospitals');

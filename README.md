@@ -17,3 +17,47 @@ Proyek ini adalah Proyek Terbuka, siapapun dapat berkontribusi
 
 ## License
 SekitarKita adalah open-sourced software yang berlisensi dibawah [MIT license](https://opensource.org/licenses/MIT).
+
+# Dokumentasi API
+
+### POST /store-device
+
+### validation
+```
+'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+'nearby_device' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+'latitude' => 'nullable|numeric',
+'longitude' => 'nullable|numeric',
+'speed' => 'sometimes|nullable|numeric|min:0|max:100',
+'device_name' => 'sometimes|nullable|string|max:100',
+```
+
+## POST /me
+
+### validation
+```
+device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+```
+
+## POST /store-firebase-token
+
+### validation
+```
+'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+'firebase_token' => 'required|string|min:32|max:256'
+```
+
+## POST /device-history
+
+### validation
+```
+'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/'
+```
+
+## POST set-health
+
+### validation
+```
+'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+'health' => 'required|in:healthy,pdp,odp'
+```

@@ -1,4 +1,4 @@
-name: Production Server Deployment
+name: Production Server Cluster Deployment
 
 on:
   push:
@@ -10,11 +10,27 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to Production Server
+      - name: Deploy to Production-1 Server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
+          port: 22
+          script: cd ~ && sh sekitarDeployer.sh
+      - name: Deploy to Production-2 Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_PROD2 }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY_PROD2 }}
+          port: 22
+          script: cd ~ && sh sekitarDeployer.sh
+      - name: Deploy to Replicate Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SEKITAR_HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SEKITAR_KEY }}
           port: 22
           script: cd ~ && sh sekitarDeployer.sh
