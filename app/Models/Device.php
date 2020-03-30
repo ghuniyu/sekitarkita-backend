@@ -10,7 +10,7 @@ class Device extends Model
 {
     protected $appends = ['online'];
 
-    protected $fillable = ['id', 'firebase_token'];
+    protected $fillable = ['id', 'firebase_token','label','phone','device_name','health_condition'];
 
     public $incrementing = false;
 
