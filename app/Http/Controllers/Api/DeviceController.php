@@ -107,7 +107,6 @@ class DeviceController extends Controller
             return response()->json([
                 'success' => true,
                 'device' => $device,
-                'phone' => $valid['phone']
             ]);
         } else {
             $device = Device::create([
