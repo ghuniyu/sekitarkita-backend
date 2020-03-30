@@ -98,7 +98,7 @@ class DeviceController extends Controller
 
         $device = Device::find($valid['device_id']);
         if ($device) {
-            $device = $device->update([
+            $device->update([
                 'health_condition' => $valid['health'],
                 'label'=> $valid['label'] ?? null,
                 'phone' => $valid['phone'] ?? null
