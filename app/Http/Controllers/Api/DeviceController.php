@@ -100,8 +100,8 @@ class DeviceController extends Controller
         if ($device) {
             $device = $device->update([
                 'health_condition' => $valid['health'],
-                'label'=> $valid['label'],
-                'phone' => $valid['phone']
+                'label'=> $valid['label'] ?? null,
+                'phone' => $valid['phone'] ?? null
             ]);
 
             return response()->json([
@@ -113,8 +113,8 @@ class DeviceController extends Controller
             $device = Device::create([
                 'id' => $valid['device_id'],
                 'health_condition' => $valid['health'],
-                'label'=> $valid['label'],
-                'phone' => $valid['phone']
+                'label'=> $valid['label'] ?? null,
+                'phone' => $valid['phone'] ?? null
             ]);
 
             return response()->json([
