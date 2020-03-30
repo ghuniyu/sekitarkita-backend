@@ -18,7 +18,7 @@ class Device extends Resource
     public static $title = 'id';
 
     public static $search = [
-        'id',
+        'id','phone'
     ];
 
     public static $with = 'nearbies';
@@ -55,49 +55,5 @@ class Device extends Resource
     public static function indexQuery(NovaRequest $request, $query)
     {
         return $query->withCount('nearbies as nearbies');
-    }
-
-    /**
-     * Get the cards available for the request.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return array
-     */
-    public function cards(Request $request)
-    {
-        return [];
-    }
-
-    /**
-     * Get the filters available for the resource.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return array
-     */
-    public function filters(Request $request)
-    {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return array
-     */
-    public function lenses(Request $request)
-    {
-        return [];
-    }
-
-    /**
-     * Get the actions available for the resource.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return array
-     */
-    public function actions(Request $request)
-    {
-        return [];
     }
 }
