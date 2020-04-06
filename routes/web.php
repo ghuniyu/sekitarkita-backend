@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/download', function () {
-    return redirect('https://sekitarkita-release.s3-ap-southeast-1.amazonaws.com/sekitarkita.apk');
+    return redirect('https://play.google.com/store/apps/details?id=com.linkensky.ornet');
 });
 
 Route::view('/mapping', 'mapping.device')->name('mapping.device');
