@@ -68,7 +68,7 @@ class InfoController extends Controller
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
-            'area' => 'required|numeric',
+            'area' => 'nullable|string',
             'speed' => 'required|numeric',
         ]);
 
