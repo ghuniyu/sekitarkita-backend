@@ -14,7 +14,7 @@ class CreateDeviceLogsTable extends Migration
     public function up()
     {
         Schema::create('device_logs', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->id();
             $table->string('device_id');
             $table->foreign('device_id')->references('id')->on('devices');
             $table->decimal('latitude', 10, 7)->nullable();
