@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\Nearby;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -53,11 +54,12 @@ class DeviceController extends Controller
                 'message' => 'Nearby Stored',
                 'nearby_device' => $nearby_device ?? null
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json([
-                'success' => false,
+                'success' => true,
                 'message' => env('APP_ENV') == 'local' ? $e->getMessage() : 'duplicate',
+                'nearby_device' => $nearby_device ?? null,
                 'stack_trace' => env('APP_ENV') == 'local' ? $e->getTraceAsString() : 'duplicate'
             ]);
         }
@@ -144,13 +146,14 @@ class DeviceController extends Controller
 
             $device = Device::find($valid['device_id']);
             $device['firebase_token'] = $valid['firebase_token'];
+            $device->save();
 
             DB::commit();
             return response()->json([
                 'success' => true,
                 'message' => 'Firebase Token Stored'
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json([
                 'success' => false,
