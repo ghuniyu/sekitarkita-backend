@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use GeneaLabs\NovaMapMarkerField\MapMarker;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
@@ -43,8 +44,8 @@ class DeviceLog extends Resource
     public function fields(Request $request)
     {
         return [
-            Text::make(__('Device'), 'device_id'),
-            Text::make(__('Device'), 'nearby_device'),
+            BelongsTo::make(__('Device'), 'device', Device::class),
+            Text::make(__('Device Sekitar'), 'nearby_device'),
             MapMarker::make('Lokasi')
                 ->hideFromIndex()
                 ->defaultLatitude('-6.914744')
