@@ -89,29 +89,36 @@ class DeviceController extends Controller
     {
         $valid = $this->validate($request, [
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
-            'health' => 'required|in:healthy,pdp,odp'
+            'health' => 'required|in:healthy,pdp,odp,confirmed,odr',
+            'label' => 'sometimes|nullable|string',
+            'phone' => 'sometimes|phone:ID'
         ]);
 
         $valid['device_id'] = Str::lower($valid['device_id']);
 
         $device = Device::find($valid['device_id']);
         if ($device) {
-            $device['health_condition'] = $valid['health'];
-            $device->save();
+            $device->update([
+                'health_condition' => $valid['health'],
+                'label'=> $valid['label'] ?? null,
+                'phone' => $valid['phone'] ?? null
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'device' => $device,
+            ]);
+        } else {
+            $device = Device::create([
+                'id' => $valid['device_id'],
+                'health_condition' => $valid['health'],
+                'label'=> $valid['label'] ?? null,
+                'phone' => $valid['phone'] ?? null
+            ]);
 
             return response()->json([
                 'success' => true,
                 'device' => $device
-            ]);
-        } else {
-            Device::create([
-                'id' => $valid['device_id'],
-                'health_condition' => $valid['health']
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'device' => Device::find($valid['device_id'])
             ]);
         }
     }

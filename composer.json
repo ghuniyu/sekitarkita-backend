@@ -24,6 +24,7 @@
         "laravel/tinker": "^2.0",
         "league/csv": "^9.6",
         "predis/predis": "^1.1",
+        "propaganistas/laravel-phone": "^4.2",
         "saumini/count": "^1.0"
     },
     "require-dev": {
