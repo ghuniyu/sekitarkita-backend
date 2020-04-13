@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Filters\AreaFilter;
 use GeneaLabs\NovaMapMarkerField\MapMarker;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
@@ -32,7 +33,7 @@ class DeviceLog extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'area', 'device'
     ];
 
     /**
@@ -44,7 +45,8 @@ class DeviceLog extends Resource
     public function fields(Request $request)
     {
         return [
-            BelongsTo::make(__('Device'), 'device', Device::class),
+            BelongsTo::make(__('Device'), 'device', Device::class)
+                ->sortable(),
             Text::make(__('Device Sekitar'), 'nearby_device'),
             MapMarker::make('Lokasi')
                 ->hideFromIndex()
@@ -52,7 +54,8 @@ class DeviceLog extends Resource
                 ->defaultLongitude('107.609810')
                 ->rules(['required', 'numeric']),
             Number::make(__('Kecepatan'), 'speed'),
-            Text::make(__('Area'), 'area'),
+            Text::make(__('Area'), 'area')
+                ->sortable(),
         ];
     }
 
@@ -75,7 +78,9 @@ class DeviceLog extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new AreaFilter
+        ];
     }
 
     /**
