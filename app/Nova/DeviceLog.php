@@ -57,7 +57,7 @@ class DeviceLog extends Resource
             Number::make(__('Kecepatan'), 'speed'),
             Text::make(__('Area'), 'area')
                 ->sortable(),
-            DateTime::make('On Date', 'create_at')
+            DateTime::make('On Date', 'created_at')
                 ->format("D-MM-Y hh:mm:ss")
                 ->sortable()
         ];
