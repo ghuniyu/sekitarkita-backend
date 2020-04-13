@@ -4,7 +4,6 @@ namespace App\Nova\Filters;
 
 use App\Models\DeviceLog;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Laravel\Nova\Filters\Filter;
 
 class AreaFilter extends Filter
@@ -26,7 +25,7 @@ class AreaFilter extends Filter
      */
     public function apply(Request $request, $query, $value)
     {
-        $ids = $query->where('area', $value)->get(['id', 'device_id'])->unique('device_id')->pluck('id');
+        $ids = $query->where('area', $value)->latest()->get(['id', 'device_id'])->unique('device_id')->pluck('id');
         return $query->whereIn('id', $ids);
     }
 
