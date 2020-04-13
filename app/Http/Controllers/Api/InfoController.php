@@ -57,7 +57,7 @@ class InfoController extends Controller
     {
         return response()->json([
            'success' => true,
-           'partners' => Partner::all()
+           'data' => Partner::all()
         ]);
     }
 }
