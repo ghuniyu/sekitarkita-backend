@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CallCenterResource;
 use App\Http\Resources\HospitalResource;
+use App\Models\DeviceLog;
 use App\Models\Kecamatan;
 use App\Models\Partner;
 use App\Models\Provinsi;
@@ -56,8 +57,25 @@ class InfoController extends Controller
     public function getPartners()
     {
         return response()->json([
-           'success' => true,
-           'partners' => Partner::all()
+            'success' => true,
+            'partners' => Partner::all()
+        ]);
+    }
+
+    public function reportPartners(Request $request)
+    {
+        $valid = $this->validate($request, [
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'area' => 'required|numeric',
+            'speed' => 'required|numeric',
+        ]);
+
+        DeviceLog::create($valid);
+        return response()->json([
+            'success' => true,
+            'message' => 'Partners Stored',
         ]);
     }
 }
