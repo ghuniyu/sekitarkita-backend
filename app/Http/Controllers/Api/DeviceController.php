@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Device;
+use App\Models\DeviceLog;
 use App\Models\Nearby;
 use Exception;
 use Illuminate\Http\Request;
@@ -28,6 +29,7 @@ class DeviceController extends Controller
 
         $device = Device::find($valid['device_id']);
         $nearby_device = Device::find($valid['nearby_device']);
+        DeviceLog::create($valid);
 
         if (!$device) {
             $device = Device::create([

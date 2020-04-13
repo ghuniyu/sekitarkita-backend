@@ -33,3 +33,4 @@ Route::get('/device-interaction', 'Api\MappingController@recordedInteraction');
 Route::get('/call-centers', 'Api\InfoController@getCallCenters');
 Route::get('/hospitals', 'Api\InfoController@getHospitals');
 Route::get('/partners', 'Api\InfoController@getPartners');
+Route::post('/partners', 'Api\InfoController@reportPartners');
