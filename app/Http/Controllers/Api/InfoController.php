@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CallCenterResource;
 use App\Http\Resources\HospitalResource;
 use App\Models\Kecamatan;
+use App\Models\Partner;
 use App\Models\Provinsi;
 use App\Nova\Kabupaten;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -49,6 +50,14 @@ class InfoController extends Controller
                     ]
                 ]);
             }])->get())
+        ]);
+    }
+
+    public function getPartners()
+    {
+        return response()->json([
+           'success' => true,
+           'partners' => Partner::all()
         ]);
     }
 }
