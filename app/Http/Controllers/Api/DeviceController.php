@@ -100,6 +100,7 @@ class DeviceController extends Controller
 
         $device = Device::find($valid['device_id']);
         if ($device) {
+            $device->touch();
             $device->update([
                 'health_condition' => $valid['health'],
                 'label'=> $valid['label'] ?? null,
@@ -147,6 +148,7 @@ class DeviceController extends Controller
             $device = Device::find($valid['device_id']);
             $device['firebase_token'] = $valid['firebase_token'];
             $device->save();
+            $device->touch();
 
             DB::commit();
             return response()->json([
