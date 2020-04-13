@@ -6,6 +6,7 @@ use App\Nova\Filters\AreaFilter;
 use GeneaLabs\NovaMapMarkerField\MapMarker;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
@@ -56,6 +57,9 @@ class DeviceLog extends Resource
             Number::make(__('Kecepatan'), 'speed'),
             Text::make(__('Area'), 'area')
                 ->sortable(),
+            DateTime::make('On Date', 'create_at')
+                ->format("D-MM-Y hh:mm:ss")
+                ->sortable()
         ];
     }
 
