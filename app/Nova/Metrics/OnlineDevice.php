@@ -16,7 +16,7 @@ class OnlineDevice extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->count($request, Device::online());
+        return $this->result(Device::online()->count());
     }
 
     /**
