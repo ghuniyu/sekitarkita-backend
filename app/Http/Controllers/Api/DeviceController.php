@@ -7,9 +7,7 @@ use App\Models\ChangeRequest;
 use App\Models\Device;
 use App\Models\DeviceLog;
 use App\Models\Nearby;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -191,5 +189,33 @@ class DeviceController extends Controller
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
         ]);
         return Device::find($valid['device_id']);
+    }
+
+    public function track(Request $request)
+    {
+        $valid = $this->validate($request, [
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
+        ]);
+        return DeviceLog::with('nearby')->where('device_id', $valid['device_id'])->get()->map(function ($item) {
+            return [
+                'lat' => (float)$item['latitude'],
+                'lng' => (float)$item['longitude'],
+                'nearby' => $item['nearby_device'],
+                'created_at' => $item['created_at'],
+                'nearby_info' => $item['nearby']
+            ];
+        })->unique(function ($item) {
+            return $item['lat'] . $item['lng'] . $item['nearby'];
+        })->values()->groupBy(function ($item) {
+            return $item['lat'] . ',' . $item['lng'];
+        })->map(function ($v, $k) {
+            return [
+                "lat" => (float)explode(',', $k)[0],
+                "lng" => (float)explode(',', $k)[1],
+                "nearby" => collect($v)->map(function ($i) {
+                    return $i['nearby'] . ' - ' . $i['created_at'];
+                })
+            ];
+        })->values();
     }
 }

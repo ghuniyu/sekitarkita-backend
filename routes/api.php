@@ -35,3 +35,4 @@ Route::get('/hospitals', 'Api\InfoController@getHospitals');
 Route::get('/partners', 'Api\InfoController@getPartners');
 Route::middleware('throttle:4,1')
     ->post('/partners', 'Api\InfoController@reportPartners');
+Route::get('/track', 'Api\DeviceController@track');

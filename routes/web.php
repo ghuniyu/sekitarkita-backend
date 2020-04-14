@@ -24,3 +24,5 @@ Route::get('/download', function () {
 Route::view('/mapping', 'mapping.device')->name('mapping.device');
 Route::view('/mapping-member', 'mapping.member')->name('mapping.member');
 Route::view('/mapping-puppeteer', 'mapping.mapping-for-puppeteer');
+
+Route::view('/tracking', 'tracking.index');
