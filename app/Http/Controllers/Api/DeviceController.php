@@ -8,7 +8,6 @@ use App\Models\Device;
 use App\Models\DeviceLog;
 use App\Models\Nearby;
 use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -28,39 +27,32 @@ class DeviceController extends Controller
         ]);
 
         $valid['nearby_device'] = Str::lower($valid['nearby_device']);
+        $device = Device::firstOrCreate([
+            'id' => Str::lower($valid['device_id'])
+        ], $valid);
 
-        $device = Device::firstOrCreate(['id' => Str::lower($valid['device_id'])]);
+        DeviceLog::create($valid);
 
         $nearby_device = Device::find($valid['nearby_device']);
-        DeviceLog::create($valid);
         $device->touch();
-        try {
-            DB::beginTransaction();
 
-            Nearby::create([
-                'device_id' => $device['id'],
-                'another_device' => $valid['nearby_device'],
-                'device_name' => $valid['device_name'] ?? null,
-                'latitude' => $valid['latitude'] ?? null,
-                'longitude' => $valid['longitude'] ?? null,
-                'speed' => $valid['speed'] ?? null,
-            ]);
+        Nearby::updateOrCreate([
+            'device_id' => $device['id'],
+            'another_device' => $valid['nearby_device'],
+        ], [
+            'device_id' => $device['id'],
+            'another_device' => $valid['nearby_device'],
+            'device_name' => $valid['device_name'] ?? null,
+            'latitude' => $valid['latitude'] ?? null,
+            'longitude' => $valid['longitude'] ?? null,
+            'speed' => $valid['speed'] ?? null,
+        ]);
 
-            DB::commit();
-            return response()->json([
-                'success' => true,
-                'message' => 'Nearby Stored',
-                'nearby_device' => $nearby_device ?? null
-            ]);
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'success' => true,
-                'message' => env('APP_ENV') == 'local' ? $e->getMessage() : 'duplicate',
-                'nearby_device' => $nearby_device ?? null,
-                'stack_trace' => env('APP_ENV') == 'local' ? $e->getTraceAsString() : 'duplicate'
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Nearby Stored',
+            'nearby_device' => $nearby_device ?? null
+        ]);
     }
 
     public function getNearby(Request $request)
@@ -182,52 +174,22 @@ class DeviceController extends Controller
             'firebase_token' => 'required|string|min:32|max:256'
         ]);
 
-        $valid['device_id'] = Str::lower($valid['device_id']);
-
-        try {
-            DB::beginTransaction();
-
-            $device = Device::find($valid['device_id']);
-            if (!$device) {
-                Device::create([
-                    'id' => $valid['device_id']
-                ]);
-            }
-
-            $device = Device::find($valid['device_id']);
+        $device = Device::firstOrCreate(['id' => Str::lower($valid['device_id'])]);
+        if (!$device->wasRecentlyCreated) {
             $device['firebase_token'] = $valid['firebase_token'];
             $device->save();
-            $device->touch();
-
-            DB::commit();
-            return response()->json([
-                'success' => true,
-                'message' => 'Firebase Token Stored'
-            ]);
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'success' => false,
-                'message' => env('APP_ENV') == 'local' ? $e->getMessage() : 'duplicate',
-                'stack_trace' => env('APP_ENV') == 'local' ? $e->getTraceAsString() : 'duplicate'
-            ]);
         }
+        return response()->json([
+            'success' => true,
+            'message' => 'Firebase Token Stored'
+        ]);
     }
 
     public function getMe(Request $request)
     {
         $valid = $this->validate($request, [
-            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
         ]);
-
-        $valid['device_id'] = Str::lower($valid['device_id']);
-        $device = Device::find($valid['device_id']);
-        if (!$device) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No Device ID Associated',
-            ]);
-        }
-        return $device;
+        return Device::find($valid['device_id']);
     }
 }
