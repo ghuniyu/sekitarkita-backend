@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChangeRequest;
 use App\Models\Device;
 use App\Models\DeviceLog;
 use App\Models\Nearby;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class DeviceController extends Controller
@@ -24,19 +27,12 @@ class DeviceController extends Controller
             'device_name' => 'sometimes|nullable|string|max:100',
         ]);
 
-        $valid['device_id'] = Str::lower($valid['device_id']);
         $valid['nearby_device'] = Str::lower($valid['nearby_device']);
 
-        $device = Device::find($valid['device_id']);
+        $device = Device::firstOrCreate(['id' => Str::lower($valid['device_id'])]);
+
         $nearby_device = Device::find($valid['nearby_device']);
         DeviceLog::create($valid);
-
-        if (!$device) {
-            $device = Device::create([
-                'id' => $valid['device_id']
-            ]);
-        }
-
         $device->touch();
         try {
             DB::beginTransaction();
@@ -70,25 +66,75 @@ class DeviceController extends Controller
     public function getNearby(Request $request)
     {
         $valid = $this->validate($request, [
-            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/'
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id'
         ]);
 
         $valid['device_id'] = Str::lower($valid['device_id']);
 
         $device = Device::find($valid['device_id']);
-        if ($device) {
-            return response()->json([
-                'success' => true,
-                'nearbies' => $device->load('nearbies')['nearbies']
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unknown Device ID'
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'nearbies' => $device->load('nearbies')['nearbies']
+        ]);
     }
 
+    public function changeRequest(Request $request)
+    {
+        $valid = $this->validate($request, [
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
+            'health' => 'required|in:healthy,pdp,odp,confirmed,odr',
+            'phone' => 'sometimes|phone:ID',
+            'nik' => 'sometimes|numeric|size:16',
+            'name' => 'sometimes|string',
+        ]);
+        $valid['status'] = 'pending';
+
+        if ($valid['nik'] && $valid['name']) {
+            $response = Http::post(env('CHECKER_URL'), [
+                'nik' => $valid['nik'],
+                'name' => $valid['name']
+            ]);
+
+            if ($response->ok()) {
+                $content = $response->json();
+                if ($content['message'] == 'valid' && $content['data'] > 60) {
+                    $hasCr = ChangeRequest::firstOrCreate([
+                        'device_id' => $valid['device_id'],
+                        'status' => 'pending',
+                    ], $valid);
+                    if (!$hasCr->wasRecentlyCreated) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Silahkan tunggu pengajuan anda yang sebelumnya diproses'
+                        ]);
+                    } else {
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Pengajuan anda akan segera diproses'
+                        ]);
+                    }
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'nama tidak sesuai dengan KTP'
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'gagal melakukan validasi data'
+                ]);
+            }
+        }
+
+        ChangeRequest::create($valid);
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengajuan anda akan segera diproses'
+        ]);
+    }
+
+//    TODO : Going to Deprecated soon
     public function setHealth(Request $request)
     {
         $valid = $this->validate($request, [
@@ -105,7 +151,7 @@ class DeviceController extends Controller
             $device->touch();
             $device->update([
                 'health_condition' => $valid['health'],
-                'label'=> $valid['label'] ?? null,
+                'label' => $valid['label'] ?? null,
                 'phone' => $valid['phone'] ?? null
             ]);
 
@@ -117,7 +163,7 @@ class DeviceController extends Controller
             $device = Device::create([
                 'id' => $valid['device_id'],
                 'health_condition' => $valid['health'],
-                'label'=> $valid['label'] ?? null,
+                'label' => $valid['label'] ?? null,
                 'phone' => $valid['phone'] ?? null
             ]);
 
