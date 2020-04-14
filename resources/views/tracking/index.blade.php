@@ -188,7 +188,7 @@
                 let trackPath = new google.maps.Polyline({
                     path: data,
                     geodesic: true,
-                    strokeColor: '#69ff8d',
+                    strokeColor: '#ff583b',
                     strokeOpacity: 1.0,
                     strokeWeight: 2
                 });
