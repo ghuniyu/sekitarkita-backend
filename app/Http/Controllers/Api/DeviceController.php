@@ -90,10 +90,11 @@ class DeviceController extends Controller
         $valid['status'] = 'pending';
 
         if ($valid['nik'] && $valid['name']) {
-            $response = Http::post(env('CHECKER_URL'), [
-                'nik' => $valid['nik'],
-                'name' => $valid['name']
-            ]);
+            $response = Http::withBasicAuth(env('CHECKER_KEY'), env('CHECKER_VALUE'))
+                ->post(env('CHECKER_URL'), [
+                    'nik' => $valid['nik'],
+                    'name' => $valid['name']
+                ]);
 
             if ($response->ok()) {
                 $content = $response->json();
