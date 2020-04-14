@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CallCenterResource;
 use App\Http\Resources\HospitalResource;
+use App\Models\Device;
 use App\Models\DeviceLog;
 use App\Models\Kecamatan;
 use App\Models\Partner;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\CallCenter;
 use App\Models\Hospital;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 
 class InfoController extends Controller
@@ -71,6 +73,24 @@ class InfoController extends Controller
             'area' => 'nullable|string',
             'speed' => 'required|numeric',
         ]);
+        $valid['device_id'] = Str::lower($valid['device_id']);
+
+        if ($valid['area'] != null) {
+            $device = Device::find($valid['device_id']);
+            if (!$device) {
+                Device::create([
+                    'id' => $valid['device_id'],
+                    'last_known_area' => $valid['area'],
+                    'last_known_latitude' => $valid['latitude'],
+                    'last_known_longitude' => $valid['longitude'],
+                ]);
+            } else {
+                $device['last_known_area'] = $valid['area'];
+                $device['last_known_latitude'] = $valid['latitude'];
+                $device['last_known_longitude'] = $valid['longitude'];
+                $device->save();
+            }
+        }
 
         DeviceLog::create($valid);
         return response()->json([
