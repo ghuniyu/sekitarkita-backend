@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\CallCenter;
 use App\Models\Hospital;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 
 class InfoController extends Controller
@@ -72,6 +73,7 @@ class InfoController extends Controller
             'area' => 'nullable|string',
             'speed' => 'required|numeric',
         ]);
+        $valid['device_id'] = Str::lower($valid['device_id']);
 
         if ($valid['area'] != null) {
             $device = Device::find($valid['device_id']);
