@@ -34,7 +34,7 @@ class Nearby extends Resource
      * @var array
      */
     public static $search = [
-        'device_id',
+        'device_id', 'device_name'
     ];
     private static $indexDefaultOrder = ['device_id' => 'asc'];
 
@@ -63,6 +63,7 @@ class Nearby extends Resource
             Text::make(__('Device Sekitar'), "another_device")
                 ->required(),
             Text::make(__('Nama Device'), "device_name")
+                ->sortable()
                 ->hideWhenUpdating()
                 ->hideWhenCreating(),
             Number::make(__('Kecepatan'), 'speed'),
@@ -72,6 +73,7 @@ class Nearby extends Resource
                 ->defaultLongitude('107.609810')
                 ->rules(['required', 'numeric']),
             DateTime::make(__('On Date'), 'created_at')
+                ->sortable()
                 ->hideWhenCreating()
                 ->hideWhenUpdating(),
         ];
