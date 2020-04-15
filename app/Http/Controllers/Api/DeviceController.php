@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChangeRequest;
 use App\Models\Device;
 use App\Models\DeviceLog;
 use App\Models\Nearby;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class DeviceController extends Controller
@@ -24,71 +24,108 @@ class DeviceController extends Controller
             'device_name' => 'sometimes|nullable|string|max:100',
         ]);
 
-        $valid['device_id'] = Str::lower($valid['device_id']);
         $valid['nearby_device'] = Str::lower($valid['nearby_device']);
+        $device = Device::firstOrCreate([
+            'id' => Str::lower($valid['device_id'])
+        ], $valid);
 
-        $device = Device::find($valid['device_id']);
-        $nearby_device = Device::find($valid['nearby_device']);
         DeviceLog::create($valid);
 
-        if (!$device) {
-            $device = Device::create([
-                'id' => $valid['device_id']
-            ]);
-        }
-
+        $nearby_device = Device::find($valid['nearby_device']);
         $device->touch();
-        try {
-            DB::beginTransaction();
 
-            Nearby::create([
-                'device_id' => $device['id'],
-                'another_device' => $valid['nearby_device'],
-                'device_name' => $valid['device_name'] ?? null,
-                'latitude' => $valid['latitude'] ?? null,
-                'longitude' => $valid['longitude'] ?? null,
-                'speed' => $valid['speed'] ?? null,
-            ]);
+        Nearby::updateOrCreate([
+            'device_id' => $device['id'],
+            'another_device' => $valid['nearby_device'],
+        ], [
+            'device_id' => $device['id'],
+            'another_device' => $valid['nearby_device'],
+            'device_name' => $valid['device_name'] ?? null,
+            'latitude' => $valid['latitude'] ?? null,
+            'longitude' => $valid['longitude'] ?? null,
+            'speed' => $valid['speed'] ?? null,
+        ]);
 
-            DB::commit();
-            return response()->json([
-                'success' => true,
-                'message' => 'Nearby Stored',
-                'nearby_device' => $nearby_device ?? null
-            ]);
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'success' => true,
-                'message' => env('APP_ENV') == 'local' ? $e->getMessage() : 'duplicate',
-                'nearby_device' => $nearby_device ?? null,
-                'stack_trace' => env('APP_ENV') == 'local' ? $e->getTraceAsString() : 'duplicate'
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Nearby Stored',
+            'nearby_device' => $nearby_device ?? null
+        ]);
     }
 
     public function getNearby(Request $request)
     {
         $valid = $this->validate($request, [
-            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/'
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id'
         ]);
 
         $valid['device_id'] = Str::lower($valid['device_id']);
 
         $device = Device::find($valid['device_id']);
-        if ($device) {
-            return response()->json([
-                'success' => true,
-                'nearbies' => $device->load('nearbies')['nearbies']
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unknown Device ID'
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'nearbies' => $device->load('nearbies')['nearbies']
+        ]);
     }
 
+    public function changeRequest(Request $request)
+    {
+        $valid = $this->validate($request, [
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
+            'health' => 'required|in:healthy,pdp,odp,confirmed,odr',
+            'phone' => 'sometimes|phone:ID',
+            'nik' => 'sometimes|numeric|size:16',
+            'name' => 'sometimes|string',
+        ]);
+        $valid['status'] = 'pending';
+
+        if ($valid['nik'] && $valid['name']) {
+            $response = Http::withBasicAuth(env('CHECKER_KEY'), env('CHECKER_VALUE'))
+                ->post(env('CHECKER_URL'), [
+                    'nik' => $valid['nik'],
+                    'name' => $valid['name']
+                ]);
+
+            if ($response->ok()) {
+                $content = $response->json();
+                if ($content['message'] == 'valid' && $content['data'] > 60) {
+                    $hasCr = ChangeRequest::firstOrCreate([
+                        'device_id' => $valid['device_id'],
+                        'status' => 'pending',
+                    ], $valid);
+                    if (!$hasCr->wasRecentlyCreated) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Silahkan tunggu pengajuan anda yang sebelumnya diproses'
+                        ]);
+                    } else {
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Pengajuan anda akan segera diproses'
+                        ]);
+                    }
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'nama tidak sesuai dengan KTP'
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'gagal melakukan validasi data'
+                ]);
+            }
+        }
+
+        ChangeRequest::create($valid);
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengajuan anda akan segera diproses'
+        ]);
+    }
+
+//    TODO : Going to Deprecated soon
     public function setHealth(Request $request)
     {
         $valid = $this->validate($request, [
@@ -105,7 +142,7 @@ class DeviceController extends Controller
             $device->touch();
             $device->update([
                 'health_condition' => $valid['health'],
-                'label'=> $valid['label'] ?? null,
+                'label' => $valid['label'] ?? null,
                 'phone' => $valid['phone'] ?? null
             ]);
 
@@ -117,7 +154,7 @@ class DeviceController extends Controller
             $device = Device::create([
                 'id' => $valid['device_id'],
                 'health_condition' => $valid['health'],
-                'label'=> $valid['label'] ?? null,
+                'label' => $valid['label'] ?? null,
                 'phone' => $valid['phone'] ?? null
             ]);
 
@@ -135,52 +172,47 @@ class DeviceController extends Controller
             'firebase_token' => 'required|string|min:32|max:256'
         ]);
 
-        $valid['device_id'] = Str::lower($valid['device_id']);
-
-        try {
-            DB::beginTransaction();
-
-            $device = Device::find($valid['device_id']);
-            if (!$device) {
-                Device::create([
-                    'id' => $valid['device_id']
-                ]);
-            }
-
-            $device = Device::find($valid['device_id']);
+        $device = Device::firstOrCreate(['id' => Str::lower($valid['device_id'])]);
+        if (!$device->wasRecentlyCreated) {
             $device['firebase_token'] = $valid['firebase_token'];
             $device->save();
-            $device->touch();
-
-            DB::commit();
-            return response()->json([
-                'success' => true,
-                'message' => 'Firebase Token Stored'
-            ]);
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'success' => false,
-                'message' => env('APP_ENV') == 'local' ? $e->getMessage() : 'duplicate',
-                'stack_trace' => env('APP_ENV') == 'local' ? $e->getTraceAsString() : 'duplicate'
-            ]);
         }
+        return response()->json([
+            'success' => true,
+            'message' => 'Firebase Token Stored'
+        ]);
     }
 
     public function getMe(Request $request)
     {
         $valid = $this->validate($request, [
-            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
         ]);
+        return Device::find($valid['device_id']);
+    }
 
-        $valid['device_id'] = Str::lower($valid['device_id']);
-        $device = Device::find($valid['device_id']);
-        if (!$device) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No Device ID Associated',
-            ]);
-        }
-        return $device;
+    public function track(Request $request, Device $device)
+    {
+        return DeviceLog::with('nearby')->where('device_id', $device['id'])->get()->map(function ($item) {
+            return [
+                'lat' => (float)$item['latitude'],
+                'lng' => (float)$item['longitude'],
+                'nearby' => $item['nearby_device'],
+                'created_at' => $item['created_at'],
+                'nearby_info' => $item['nearby']
+            ];
+        })->unique(function ($item) {
+            return $item['lat'] . $item['lng'] . $item['nearby'];
+        })->values()->groupBy(function ($item) {
+            return $item['lat'] . ',' . $item['lng'];
+        })->map(function ($v, $k) {
+            return [
+                "lat" => (float)explode(',', $k)[0],
+                "lng" => (float)explode(',', $k)[1],
+                "nearby" => collect($v)->map(function ($i) {
+                    return $i['nearby'] . ' - ' . $i['created_at'];
+                })
+            ];
+        })->values();
     }
 }

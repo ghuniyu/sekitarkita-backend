@@ -21,6 +21,7 @@ Route::post('me', 'Api\DeviceController@getMe');
 Route::post('store-firebase-token', 'Api\DeviceController@storeFirebaseToken');
 Route::post('device-history', 'Api\DeviceController@getNearby');
 Route::post('set-health', 'Api\DeviceController@setHealth');
+Route::post('change-status', 'Api\DeviceController@changeRequest');
 
 Route::get('/', function () {
     return response()->json([
@@ -35,3 +36,5 @@ Route::get('/hospitals', 'Api\InfoController@getHospitals');
 Route::get('/partners', 'Api\InfoController@getPartners');
 Route::middleware('throttle:4,1')
     ->post('/partners', 'Api\InfoController@reportPartners');
+Route::get('/track/{device}', 'Api\DeviceController@track')
+    ->middleware(config('nova.middleware', []));

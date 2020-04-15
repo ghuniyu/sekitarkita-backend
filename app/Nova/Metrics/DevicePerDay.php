@@ -17,7 +17,13 @@ class DevicePerDay extends Trend
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->countByDays($request, Device::class);
+        $device = Device::query();
+
+        if ($area = $request->user()['area']) {
+            $device->where('last_known_area', 'like', "%$area%");
+        }
+
+        return $this->countByDays($request, $device);
     }
 
     /**

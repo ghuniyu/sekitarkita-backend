@@ -3,12 +3,12 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use NovaButton\Button;
 use Saumini\Count\RelationshipCount;
 
 class Device extends Resource
@@ -22,6 +22,7 @@ class Device extends Resource
     ];
 
     public static $with = 'nearbies';
+
 
     public function fields(Request $request)
     {
@@ -46,14 +47,22 @@ class Device extends Resource
                 ->displayUsingLabels()
                 ->required()
                 ->sortable(),
+            Text::make('Area', 'last_known_area'),
             RelationshipCount::make('Riwayat Interaksi', 'nearbies')
                 ->sortable(),
-            HasMany::make('Riwayat Interaksi', 'nearbies', Nearby::class)
+            HasMany::make('Riwayat Interaksi', 'nearbies', Nearby::class),
+            Button::make('Lihat Aktifitas')->link(route('tracking.view',  [
+                'device_id' => $this['id']
+            ]))->style('primary')
         ];
     }
 
     public static function indexQuery(NovaRequest $request, $query)
     {
+        if ($area = $request->user()['area']) {
+            $query = $query->where('last_known_area', 'like', "%$area%");
+        }
+
         return $query->withCount('nearbies as nearbies');
     }
 }

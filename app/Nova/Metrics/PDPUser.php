@@ -14,12 +14,17 @@ class PDPUser extends Value
     /**
      * Calculate the value of the metric.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param NovaRequest $request
      * @return mixed
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->count($request, Device::pdp());
+        $device = Device::query();
+
+        if ($area = $request->user()['area']) {
+            $device->where('last_known_area', 'like', "%$area%");
+        }
+        return $this->count($request, $device->pdp());
     }
 
     /**

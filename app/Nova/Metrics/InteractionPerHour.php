@@ -17,7 +17,14 @@ class InteractionPerHour extends Trend
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->countByHours($request, Nearby::class);
+        $nearby = Nearby::query();
+
+        if ($area = $request->user()['area']) {
+            $nearby->whereHas('device', function ($q) use ($area) {
+                return $q->where('last_known_area', 'like', "%$area%");
+            });
+        }
+        return $this->countByHours($request, $nearby);
     }
 
     /**
@@ -28,10 +35,10 @@ class InteractionPerHour extends Trend
     public function ranges()
     {
         return [
-            12 => '12 Hour',
-            24 => '24 Hour',
-            48 => '48 Days',
-            96 => '96 Days',
+            12 => '12 Jam',
+            24 => '24 Jam',
+            48 => '48 Jam',
+            96 => '96 Jam',
         ];
     }
 

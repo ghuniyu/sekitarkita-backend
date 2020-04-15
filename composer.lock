@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "85f09631378684c7bb3db752fd6b516b",
+    "content-hash": "e799a4b7cae771c8bb733c70d3035c60",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -204,6 +204,46 @@
                 "time"
             ],
             "time": "2019-11-30T02:33:19+00:00"
+        },
+        {
+            "name": "dillingham/nova-button",
+            "version": "1.0.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dillingham/nova-button.git",
+                "reference": "05a03c9c2104a02e51edf840ac29c0a62363666a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dillingham/nova-button/zipball/05a03c9c2104a02e51edf840ac29c0a62363666a",
+                "reference": "05a03c9c2104a02e51edf840ac29c0a62363666a",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "NovaButton\\Providers\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "NovaButton\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brian Dillingham",
+                    "email": "bdillingham88@gmail.com"
+                }
+            ],
+            "description": "Nova button package",
+            "time": "2020-01-12T14:26:22+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1239,6 +1279,7 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "abandoned": "php-parallel-lint/php-console-color",
             "time": "2018-09-29T17:23:10+00:00"
         },
         {
@@ -1285,6 +1326,7 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
@@ -7454,7 +7496,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.2.5"
+        "php": "^7.2.5",
+        "ext-json": "*"
     },
     "platform-dev": []
 }

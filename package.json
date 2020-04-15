@@ -21,6 +21,7 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "sweetalert2": "^9.10.12",
         "vis-network": "^7.4.0"
     }
 }
