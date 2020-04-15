@@ -80,7 +80,7 @@ class DeviceController extends Controller
         $valid['status'] = 'pending';
         $valid['health_condition'] = $valid['health'];
 
-        if ($valid['nik'] && $valid['name']) {
+        if (isset($valid['nik']) && isset($valid['name'])) {
             $response = Http::withBasicAuth(env('CHECKER_KEY'), env('CHECKER_VALUE'))
                 ->post(env('CHECKER_URL'), [
                     'nik' => $valid['nik'],
