@@ -191,12 +191,9 @@ class DeviceController extends Controller
         return Device::find($valid['device_id']);
     }
 
-    public function track(Request $request)
+    public function track(Request $request, Device $device)
     {
-        $valid = $this->validate($request, [
-            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
-        ]);
-        return DeviceLog::with('nearby')->where('device_id', $valid['device_id'])->get()->map(function ($item) {
+        return DeviceLog::with('nearby')->where('device_id', $device['id'])->get()->map(function ($item) {
             return [
                 'lat' => (float)$item['latitude'],
                 'lng' => (float)$item['longitude'],

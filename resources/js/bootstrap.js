@@ -16,6 +16,7 @@ try {
     window.$ = window.jQuery = require('jquery');
     require('bootstrap');
     window.vis = require('vis-network/standalone/umd/vis-network');
+    window.Swal = require('sweetalert2');
 } catch (e) {
 
 }

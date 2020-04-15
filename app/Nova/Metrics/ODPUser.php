@@ -18,7 +18,13 @@ class ODPUser extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->count($request, Device::odp());
+        $device = Device::query()->odp();
+
+        if ($area = $request->user()['area']) {
+            $device->where('last_known_area', 'like', "%$area%");
+        }
+
+        return $this->count($request, $device);
     }
 
     /**

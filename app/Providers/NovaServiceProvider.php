@@ -35,6 +35,11 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         });
 
         parent::boot();
+
+        $this->app->alias(
+            \App\Http\Controllers\NovaLoginController::class,
+            \Laravel\Nova\Http\Controllers\LoginController::class
+        );
     }
 
     /**
@@ -61,7 +66,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         Gate::define('viewNova', function ($user) {
             return in_array($user->email, [
-                'admin@sekitarkita.id'
+
             ]);
         });
     }

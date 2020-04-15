@@ -19,7 +19,15 @@ class InteractionPerDay extends Trend
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->countByDays($request, Nearby::class);
+        $nearby = Nearby::query();
+
+        if ($area = $request->user()['area']) {
+            $nearby->whereHas('device', function ($q) use ($area) {
+                return $q->where('last_known_area', 'like', "%$area%");
+            });
+        }
+
+        return $this->countByDays($request, $nearby);
     }
 
     /**

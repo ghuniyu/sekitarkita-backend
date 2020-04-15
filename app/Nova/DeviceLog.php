@@ -11,6 +11,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use NovaButton\Button;
 
 class DeviceLog extends Resource
 {
@@ -37,6 +38,15 @@ class DeviceLog extends Resource
         'id', 'area', 'device_id'
     ];
 
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        if ($area = $request->user()['area']) {
+            return $query->where('area', 'like', "%$area%");
+        }
+
+        return $query;
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -59,7 +69,10 @@ class DeviceLog extends Resource
                 ->sortable(),
             DateTime::make('On Date', 'created_at')
                 ->format("D-MM-Y hh:mm:ss")
-                ->sortable()
+                ->sortable(),
+            Button::make('Lihat Aktifitas')->link(route('tracking.view',  [
+                'device_id' => $this['device_id']
+            ]))->style('primary')
         ];
     }
 
@@ -83,7 +96,10 @@ class DeviceLog extends Resource
     public function filters(Request $request)
     {
         return [
-            new AreaFilter
+            (new AreaFilter)
+                ->canSee(function ($request) {
+                    return $request->user()['area'] == null;
+                })
         ];
     }
 

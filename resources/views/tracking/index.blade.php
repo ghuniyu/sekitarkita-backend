@@ -4,6 +4,8 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Member Tracking</title>
+    <!-- Styles -->
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     <style>
         /* Always set the map height explicitly to define the size of the div
          * element that contains the map. */
@@ -43,7 +45,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.3);
+            background-color: rgba(0, 0, 0, 0.3);
         }
 
         /* :not(:required) hides these rules from IE9 and below */
@@ -91,6 +93,7 @@
                 transform: rotate(360deg);
             }
         }
+
         @-moz-keyframes spinner {
             0% {
                 -webkit-transform: rotate(0deg);
@@ -107,6 +110,7 @@
                 transform: rotate(360deg);
             }
         }
+
         @-o-keyframes spinner {
             0% {
                 -webkit-transform: rotate(0deg);
@@ -123,6 +127,7 @@
                 transform: rotate(360deg);
             }
         }
+
         @keyframes spinner {
             0% {
                 -webkit-transform: rotate(0deg);
@@ -140,14 +145,12 @@
             }
         }
     </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.css" id="theme-styles">
 </head>
 
 <body>
 <div id="loading" class="loading">Loading&#8230;</div>
 <div id="map"></div>
+<script src="{{ mix('js/app.js') }}"></script>
 <script>
     function initMap() {
         let map = new google.maps.Map(document.getElementById('map'), {
@@ -156,14 +159,14 @@
             mapTypeId: 'terrain'
         });
 
-        fetch('http://localhost:8000/api/track')
+        fetch('/api/track/{{urldecode(request()->query('device_id'))}}')
             .then((response) => {
                 document.getElementById("loading").style.display = "none";
                 return response.json();
             })
             .then((data) => {
-                if (data.length === 0){
-                    Swal.fire('Error', 'data tidak tersedia', 'error');
+                if (data.length === 0) {
+                    Swal.fire({title: 'Error', text: 'data tidak tersedia', icon: 'error', heightAuto: false});
                     return
                 }
 
@@ -177,10 +180,12 @@
                         map: map,
                         icon: icon
                     });
+
                     marker.addListener('click', function () {
                         Swal.fire({
                             title: 'Berkontak Dengan',
-                            html: dot.nearby.join('<br/>')
+                            html: dot.nearby.join('<br/>'),
+                            heightAuto: false
                         })
                     })
                 });

@@ -25,4 +25,8 @@ Route::view('/mapping', 'mapping.device')->name('mapping.device');
 Route::view('/mapping-member', 'mapping.member')->name('mapping.member');
 Route::view('/mapping-puppeteer', 'mapping.mapping-for-puppeteer');
 
-Route::view('/tracking', 'tracking.index');
+Route::view('/tracking', 'tracking.index')->name('tracking.view')
+    ->middleware(config('nova.middleware', []));
+
+Route::get('api/track/{device}', 'Api\DeviceController@track')
+    ->middleware(config('nova.middleware', []));

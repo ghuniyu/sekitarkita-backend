@@ -16,7 +16,14 @@ class OnlineDevice extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->result(Device::online()->count());
+        $device = Device::query();
+
+        if ($area = $request->user()['area']) {
+            $device->where('last_known_area', 'like', "%$area%");
+        }
+
+
+        return $this->result($device->online()->count());
     }
 
     /**

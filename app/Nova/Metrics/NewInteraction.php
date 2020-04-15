@@ -16,7 +16,15 @@ class NewInteraction extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->count($request, Nearby::class);
+        $nearby = Nearby::query();
+
+        if ($area = $request->user()['area']) {
+            $nearby->whereHas('device', function ($q) use ($area) {
+                return $q->where('last_known_area', 'like', "%$area%");
+            });
+        }
+
+        return $this->count($request, $nearby);
     }
 
     /**
