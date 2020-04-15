@@ -74,7 +74,7 @@ class DeviceController extends Controller
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
             'health' => 'required|in:healthy,pdp,odp,confirmed,odr',
             'phone' => 'sometimes|phone:ID',
-            'nik' => 'sometimes|numeric|size:16',
+            'nik' => 'sometimes|numeric|digits:16',
             'name' => 'sometimes|string',
         ]);
         $valid['status'] = 'pending';
