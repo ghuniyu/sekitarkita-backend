@@ -78,6 +78,7 @@ class DeviceController extends Controller
             'name' => 'sometimes|string',
         ]);
         $valid['status'] = 'pending';
+        $valid['health_condition'] = $valid['health'];
 
         if ($valid['nik'] && $valid['name']) {
             $response = Http::withBasicAuth(env('CHECKER_KEY'), env('CHECKER_VALUE'))
@@ -96,7 +97,7 @@ class DeviceController extends Controller
                     if (!$hasCr->wasRecentlyCreated) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Silahkan tunggu pengajuan anda yang sebelumnya diproses'
+                            'message' => 'Anda sudah melakukan pengajuan sebelumnya, silahkan menunggu proses verifikasi'
                         ]);
                     } else {
                         return response()->json([
@@ -107,7 +108,7 @@ class DeviceController extends Controller
                 } else {
                     return response()->json([
                         'success' => false,
-                        'message' => 'nama tidak sesuai dengan KTP'
+                        'message' => 'nama tidak sesuai dengan KTP / kurang lengkap'
                     ]);
                 }
             } else {

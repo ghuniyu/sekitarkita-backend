@@ -2,31 +2,28 @@
 
 namespace App\Nova;
 
-use GeneaLabs\NovaMapMarkerField\MapMarker;
+use App\Nova\Filters\ChangeRequestFilter;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\BelongsToMany;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Nearby extends Resource
+class ChangeRequest extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'App\Models\Nearby';
+    public static $model = 'App\Models\ChangeRequest';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'device_id';
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -34,10 +31,8 @@ class Nearby extends Resource
      * @var array
      */
     public static $search = [
-        'device_id', 'device_name'
+        'id','status','health_condition',
     ];
-    private static $indexDefaultOrder = ['device_id' => 'asc'];
-
 
     public static function indexQuery(NovaRequest $request, $query)
     {
@@ -47,48 +42,36 @@ class Nearby extends Resource
             });
         }
 
-        if (empty($request->get('orderBy'))) {
-            $query->getQuery()->orders = [];
-            return $query->orderBy(key(static::$indexDefaultOrder), reset(static::$indexDefaultOrder));
-        }
         return $query;
     }
 
     /**
      * Get the fields displayed by the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return array
      */
     public function fields(Request $request)
     {
         return [
-            BelongsTo::make('Device', 'device', Device::class)
-                ->required()
-                ->sortable(),
-            Text::make(__('Device Sekitar'), "another_device")
+            BelongsTo::make('Device'),
+            Select::make('Status Kesehatan', 'health_condition')
+                ->displayUsingLabels()
+                ->options(['healthy' => 'Sehat', 'pdp' => 'PDP', 'odp' => 'ODP', 'confirmed' => 'Positif'])
+                ->sortable()
                 ->required(),
-            Text::make(__('Nama Device'), "device_name")
+            Select::make('Status Pengajuan', 'status')
+                ->displayUsingLabels()
                 ->sortable()
-                ->hideWhenUpdating()
-                ->hideWhenCreating(),
-            Number::make(__('Kecepatan'), 'speed'),
-            MapMarker::make('Location')
-                ->hideFromIndex()
-                ->defaultLatitude('-6.914744')
-                ->defaultLongitude('107.609810')
-                ->rules(['required', 'numeric']),
-            DateTime::make(__('On Date'), 'created_at')
-                ->sortable()
-                ->hideWhenCreating()
-                ->hideWhenUpdating(),
+                ->options(['pending' => 'Menunggu Verifikasi', 'approve' => 'Diterima', 'reject' => 'Ditolak'])
+                ->required()
         ];
     }
 
     /**
      * Get the cards available for the request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return array
      */
     public function cards(Request $request)
@@ -99,18 +82,29 @@ class Nearby extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return array
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            (new ChangeRequestFilter(
+                'status',
+                ['Menunggu Verifikasi' => 'pending', 'Diterima' => 'approve', 'Ditolak' => 'reject'],
+                'Status Pengajuan'
+            )),
+            (new ChangeRequestFilter(
+                'health_condition',
+                ['Sehat' => 'healthy', 'PDP' => 'pdp', 'ODP' => 'odp', 'Positif' => 'confirmed'],
+                'Status Kesehatan'
+            )),
+        ];
     }
 
     /**
      * Get the lenses available for the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return array
      */
     public function lenses(Request $request)
@@ -121,7 +115,7 @@ class Nearby extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return array
      */
     public function actions(Request $request)
