@@ -16,7 +16,7 @@ class AlterDeviceAddLastKnown extends Migration
         Schema::table('devices', function (Blueprint $table) {
             $table->decimal('last_known_latitude', 10, 7)->nullable()->after('health_condition');
             $table->decimal('last_known_longitude', 10, 7)->nullable()->after('last_known_latitude');
-            $table->decimal('last_known_area', 10, 7)->nullable()->after('last_known_longitude');
+            $table->string('last_known_area')->nullable();
         });
     }
 
