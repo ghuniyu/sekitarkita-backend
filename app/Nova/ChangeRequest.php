@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class ChangeRequest extends Resource
@@ -31,7 +32,7 @@ class ChangeRequest extends Resource
      * @var array
      */
     public static $search = [
-        'id','status','health_condition',
+        'id', 'status', 'health_condition', 'nik', 'name', 'phone'
     ];
 
     public static function indexQuery(NovaRequest $request, $query)
@@ -55,7 +56,7 @@ class ChangeRequest extends Resource
     {
         return [
             BelongsTo::make('Device'),
-            Select::make('Status Kesehatan', 'health_condition')
+            Select::make('Merubah ke', 'health_condition')
                 ->displayUsingLabels()
                 ->options(['healthy' => 'Sehat', 'pdp' => 'PDP', 'odp' => 'ODP', 'confirmed' => 'Positif'])
                 ->sortable()
@@ -64,7 +65,16 @@ class ChangeRequest extends Resource
                 ->displayUsingLabels()
                 ->sortable()
                 ->options(['pending' => 'Menunggu Verifikasi', 'approve' => 'Diterima', 'reject' => 'Ditolak'])
-                ->required()
+                ->required(),
+            Text::make("NIK", 'nik')
+                ->sortable()
+                ->required(),
+            Text::make("Nama", 'name')
+                ->sortable()
+                ->required(),
+            Text::make("Nomor Telepon", 'phone')
+                ->sortable()
+                ->required(),
         ];
     }
 
