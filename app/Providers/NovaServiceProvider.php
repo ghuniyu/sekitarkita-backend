@@ -14,6 +14,7 @@ use App\Nova\Metrics\NewInteraction;
 use App\Nova\Metrics\ODPUser;
 use App\Nova\Metrics\OnlineDevice;
 use App\Nova\Metrics\PDPUser;
+use Ericlagarda\NovaTextCard\TextCard;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Actions\ActionEvent;
 use Laravel\Nova\Nova;
@@ -77,6 +78,13 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function cards()
     {
         return [
+            (new TextCard())
+                ->width('1/3')
+                ->heading(
+                    '<div class="mb-2"><h1 class="text-xl text-80 mb-2">Mapping Device</h1>')
+                ->text('<a href="' . route('mapping.member') . '"  target="_blank" class="btn btn-default btn-primary">Lihat Data Visual Network</a>')
+                ->headingAsHtml()
+                ->textAsHtml(),
             new OnlineDevice,
             new InteractionPerMinutes,
             new InteractionPerHour,

@@ -29,12 +29,8 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/member-interaction', 'Api\MappingController@associatedInteraction');
-Route::get('/device-interaction', 'Api\MappingController@recordedInteraction');
 Route::get('/call-centers', 'Api\InfoController@getCallCenters');
 Route::get('/hospitals', 'Api\InfoController@getHospitals');
 Route::get('/partners', 'Api\InfoController@getPartners');
 Route::middleware('throttle:4,1')
     ->post('/partners', 'Api\InfoController@reportPartners');
-Route::get('/track/{device}', 'Api\DeviceController@track')
-    ->middleware(config('nova.middleware', []));

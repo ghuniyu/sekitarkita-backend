@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e799a4b7cae771c8bb733c70d3035c60",
+    "content-hash": "037473e8d6ad12e6fe7d62eb744d85b2",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -768,6 +768,57 @@
                 "validator"
             ],
             "time": "2020-02-13T22:36:52+00:00"
+        },
+        {
+            "name": "ericlagarda/nova-text-card",
+            "version": "v1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Krato/NovaTextCard.git",
+                "reference": "5f5ea5a1ea87881b623dd199c146aa6aaa66d516"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Krato/NovaTextCard/zipball/5f5ea5a1ea87881b623dd199c146aa6aaa66d516",
+                "reference": "5f5ea5a1ea87881b623dd199c146aa6aaa66d516",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "*",
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Ericlagarda\\NovaTextCard\\CardServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ericlagarda\\NovaTextCard\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eric Lagarda",
+                    "email": "eric@infinety.es",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A custom card for Laravel Nova to show Text in cards with some good options",
+            "keywords": [
+                "card",
+                "laravel",
+                "nova",
+                "text"
+            ],
+            "time": "2020-02-24T09:26:16+00:00"
         },
         {
             "name": "fideloper/proxy",
