@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Date;
 
 class Device extends Model
 {
@@ -36,11 +35,11 @@ class Device extends Model
 
     public function scopeOnline($query)
     {
-        return $query->where('updated_at', '>', Carbon::now('Asia/Jakarta')->addMinutes(-30));
+        return $query->where('updated_at', '>', Carbon::now('Asia/Jakarta')->addMinutes(-60));
     }
 
     public function getOnlineAttribute()
     {
-        return $this['updated_at'] > Carbon::now('Asia/Jakarta')->addMinutes(-30);
+        return $this['updated_at'] > Carbon::now('Asia/Jakarta')->addMinutes(-60);
     }
 }
