@@ -7,6 +7,7 @@ use App\Models\ChangeRequest;
 use App\Models\Device;
 use App\Models\DeviceLog;
 use App\Models\Nearby;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -221,17 +222,27 @@ class DeviceController extends Controller
     {
         $valid = $this->validate($request, [
             'area' => 'required',
-            'status' => 'required|in:odp,pdp,confirmed,healthy',
+            'status' => 'required|in:odp,pdp,confirmed,healthy,all',
         ]);
         $area = $valid['area'];
-        $devices = Device::where('last_known_area', 'like', "%$area%")
-            ->where('health_condition', $valid['status'])
-            ->get();
+        $devices = Device::query();
+        $devices->when($area = $valid['area'], function (Builder $query, $area) {
+            if ($area == 'all') {
+                return $query->whereNotNull('last_known_area');
+            } else {
+                return $query->where('last_known_area', 'like', "%$area%");
+            }
+        });
+        $devices->when($valid['status'] !== 'all', function (Builder $query) use ($valid) {
+            return $query->where('health_condition', $valid['status']);
+        });
+
+        $devices = $devices->get();
         return $devices->map(function ($device) {
             return [
                 'id' => $device['id'],
-                'lat' => (float) $device['last_known_latitude'],
-                'lng' => (float) $device['last_known_longitude'],
+                'lat' => (float)$device['last_known_latitude'],
+                'lng' => (float)$device['last_known_longitude'],
                 'online' => $device['online'],
                 'status' => $device['health_condition']
             ];

@@ -174,8 +174,8 @@
 
                 data.forEach(function (dot) {
                     let icon = {
-                        url: dot.online ? "/images/markers/{{urldecode(request()->query('status'))}}-online.gif" :
-                            "/images/markers/{{urldecode(request()->query('status'))}}.png",
+                        url: dot.online ? `/images/markers/${dot.status}-online.gif` :
+                            `/images/markers/${dot.status}.png`,
                         scaledSize: new google.maps.Size(50, 50),
                         labelOrigin: new google.maps.Point(25, 60)
                     };

@@ -131,6 +131,14 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     '"  target="_blank" class="btn btn-default btn-primary">Lihat Data di Maps</a>')
                 ->headingAsHtml()
                 ->textAsHtml(),
+            (new TextCard())
+                ->width('1/3')
+                ->heading(
+                    '<div class="mb-2"><h1 class="text-xl text-80 mb-2">Map Penyebaran Pengguna</h1>')
+                ->text('<a href="' . route('tracking.filtered', ['area' => auth()->user()['area'] ?? 'all', 'status' => 'all']) .
+                    '"  target="_blank" class="btn btn-default btn-primary">Lihat Data di Maps</a>')
+                ->headingAsHtml()
+                ->textAsHtml(),
         ];
     }
 
