@@ -18,7 +18,7 @@ class Device extends Resource
     public static $title = 'id';
 
     public static $search = [
-        'id','phone'
+        'id','phone','nik','name','local_numbering','label'
     ];
 
     public static $with = 'nearbies';
@@ -30,8 +30,21 @@ class Device extends Resource
             Text::make(__('Device MAC'), 'id')
                 ->required()
                 ->sortable(),
+            Text::make(__('Nama'),'name')
+                ->displayUsing(function ($resource) {
+                    return ucwords($resource);
+                })
+                ->onlyOnDetail(),
+            Text::make(__('NIK'),'nik')
+                ->onlyOnDetail(),
             Text::make(__('Nama Perangkat'), 'device_name'),
+            Text::make(__('Nomor'),'local_numbering')
+                ->displayUsing(function ($resource) {
+                    return strtoupper($resource);
+                })
+                ->onlyOnDetail(),
             Text::make('Label')
+                ->hideFromIndex()
                 ->help('optional')
                 ->sortable(),
             Text::make(__('Telepon'), 'phone')
