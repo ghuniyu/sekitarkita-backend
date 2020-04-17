@@ -14,6 +14,7 @@ use App\Nova\Metrics\NewInteraction;
 use App\Nova\Metrics\ODPUser;
 use App\Nova\Metrics\OnlineDevice;
 use App\Nova\Metrics\PDPUser;
+use Ericlagarda\NovaTextCard\TextCard;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Actions\ActionEvent;
 use Laravel\Nova\Nova;
@@ -50,9 +51,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function routes()
     {
         Nova::routes()
-                ->withAuthenticationRoutes()
-                ->withPasswordResetRoutes()
-                ->register();
+            ->withAuthenticationRoutes()
+            ->withPasswordResetRoutes()
+            ->register();
     }
 
     /**
@@ -91,6 +92,45 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             new HealthyUser,
             new PDPUser,
             new ODPUser,
+            (new TextCard())
+                ->width('1/3')
+                ->heading(
+                    '<div class="mb-2"><h1 class="text-xl text-80 mb-2">Mapping Device</h1>')
+                ->text('<a href="' . route('mapping.member') . '"  target="_blank" class="btn btn-default btn-primary">Lihat Data Visual Network</a>')
+                ->headingAsHtml()
+                ->textAsHtml(),
+            (new TextCard())
+                ->width('1/3')
+                ->heading(
+                    '<div class="mb-2"><h1 class="text-xl text-80 mb-2">Map Penyebaran Sehat</h1>')
+                ->text('<a href="' . route('tracking.filtered', ['area' => auth()->user()['area'] ?? 'all', 'status' => 'healthy']) .
+                    '"  target="_blank" class="btn btn-default btn-primary">Lihat Data di Maps</a>')
+                ->headingAsHtml()
+                ->textAsHtml(),
+            (new TextCard())
+                ->width('1/3')
+                ->heading(
+                    '<div class="mb-2"><h1 class="text-xl text-80 mb-2">Map Penyebaran ODP</h1>')
+                ->text('<a href="' . route('tracking.filtered', ['area' => auth()->user()['area'] ?? 'all', 'status' => 'odp']) .
+                    '"  target="_blank" class="btn btn-default btn-primary">Lihat Data di Maps</a>')
+                ->headingAsHtml()
+                ->textAsHtml(),
+            (new TextCard())
+                ->width('1/3')
+                ->heading(
+                    '<div class="mb-2"><h1 class="text-xl text-80 mb-2">Map Penyebaran PDP</h1>')
+                ->text('<a href="' . route('tracking.filtered', ['area' => auth()->user()['area'] ?? 'all', 'status' => 'pdp']) .
+                    '"  target="_blank" class="btn btn-default btn-primary">Lihat Data di Maps</a>')
+                ->headingAsHtml()
+                ->textAsHtml(),
+            (new TextCard())
+                ->width('1/3')
+                ->heading(
+                    '<div class="mb-2"><h1 class="text-xl text-80 mb-2">Map Penyebaran Positif</h1>')
+                ->text('<a href="' . route('tracking.filtered', ['area' => auth()->user()['area'] ?? 'all', 'status' => 'confirmed']) .
+                    '"  target="_blank" class="btn btn-default btn-primary">Lihat Data di Maps</a>')
+                ->headingAsHtml()
+                ->textAsHtml(),
         ];
     }
 

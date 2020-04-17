@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Date;
 
 class Device extends Model
 {
     protected $appends = ['online'];
 
-    protected $fillable = ['id', 'firebase_token', 'label', 'phone', 'device_name', 'health_condition'];
+    protected $fillable = ['id', 'firebase_token', 'label', 'phone', 'device_name',
+        'health_condition','name','nik','local_numbering','global_numbering'];
 
     public $incrementing = false;
 
@@ -36,11 +36,11 @@ class Device extends Model
 
     public function scopeOnline($query)
     {
-        return $query->where('updated_at', '>', Carbon::now('Asia/Jakarta')->addMinutes(-30));
+        return $query->where('updated_at', '>', Carbon::now('Asia/Jakarta')->addMinutes(-60));
     }
 
     public function getOnlineAttribute()
     {
-        return $this['updated_at'] > Carbon::now('Asia/Jakarta')->addMinutes(-30);
+        return $this['updated_at'] > Carbon::now('Asia/Jakarta')->addMinutes(-60);
     }
 }

@@ -4,6 +4,9 @@ window.visualNetwork =  visualNetwork = (url, customOptions = null, customScale 
     fetch(url)
         .then((res => res.json()))
         .then((data) => {
+            if(!data.nodes.length) {
+                Swal.fire('Oops!', 'Tidak ada data', 'error');
+            }
             window.visNetworkRaw = data;
             function draw(data) {
                 const container = document.getElementById('network');

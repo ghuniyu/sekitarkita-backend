@@ -17,6 +17,7 @@
         "php": "^7.2.5",
         "ext-json": "*",
         "dillingham/nova-button": "^1.0",
+        "ericlagarda/nova-text-card": "^1.1",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "genealabs/nova-map-marker-field": "^0.1.15",

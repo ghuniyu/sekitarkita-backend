@@ -42,7 +42,7 @@ class User extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function fields(Request $request)
@@ -62,13 +62,19 @@ class User extends Resource
 
             Text::make('Area')
                 ->help('ex. gorontalo')
-                ->canSee(function () use($isSuperadmin) {
+                ->canSee(function () use ($isSuperadmin) {
                     return $isSuperadmin;
                 }),
 
             Text::make('Domain Access')
                 ->help('ex. subdomain.domain.com')
-                ->canSee(function () use($isSuperadmin) {
+                ->canSee(function () use ($isSuperadmin) {
+                    return $isSuperadmin;
+                }),
+
+            Text::make('Prefix (Code Area)}', 'prefix')
+                ->help('ex. GTO')
+                ->canSee(function () use ($isSuperadmin) {
                     return $isSuperadmin;
                 }),
 
@@ -82,7 +88,7 @@ class User extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function cards(Request $request)
@@ -93,7 +99,7 @@ class User extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function filters(Request $request)
@@ -104,7 +110,7 @@ class User extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function lenses(Request $request)
@@ -115,7 +121,7 @@ class User extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function actions(Request $request)

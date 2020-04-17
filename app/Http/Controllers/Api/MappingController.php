@@ -12,10 +12,16 @@ class MappingController extends Controller
 {
     public function associatedInteraction(Request $request)
     {
-        $key = $request->query('only') ?? 'all';
+        $queryParam = $request->query('only') ?? 'all';
+        $key = "associatedInteraction_{$queryParam}_{$request->getHost()}";
 
-        $results = cache()->remember("associatedInteraction_{$key}", now()->addHours(1), function () use ($request) {
-            $devices = Device::all();
+        $results = cache()->remember($key, now()->addHours(1), function () use ($request) {
+            $devices = Device::query();
+            $devices->when($this->checkPartner($request->getHost()), function ($query) use ($request) {
+                return $query->where('last_known_area', 'like', "%{$request->user()['area']}%");
+            });
+
+            $devices = $devices->get();
             if ($request->get('only')) {
                 $filtered = $devices->where('health_condition', $request->get('only'));
                 $known_nearby = Nearby::whereIn('device_id', $filtered->pluck('id'))->get();
@@ -123,5 +129,10 @@ class MappingController extends Controller
         });
 
         return response()->json($results);
+    }
+
+
+    private function checkPartner($host) {
+        return $host !== env('APP_DOMAIN','sekitarkita.id') && $host !== 'localhost';
     }
 }

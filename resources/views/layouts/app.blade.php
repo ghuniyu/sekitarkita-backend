@@ -29,8 +29,8 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link" data-toggle="dropdown"> Mapping <i class="mr-2 fe fe-chevron-down"></i></a>
                             <div class="dropdown-menu dropdown-menu-arrow">
-                                <a href="{{ route('mapping.member') }}" class="dropdown-item ">Member</a>
-                                <a href="{{ route('mapping.device') }}" class="dropdown-item ">Device</a>
+                                <a href="{{ route('mapping.member') }}" class="dropdown-item ">Semua</a>
+{{--                                <a href="{{ route('mapping.device') }}" class="dropdown-item ">Device</a>--}}
                                 <a href="{{ route('mapping.member', ['only' => 'pdp']) }}" class="dropdown-item ">PDP</a>
                                 <a href="{{ route('mapping.member', ['only' => 'odp']) }}" class="dropdown-item ">ODP</a>
                             </div>

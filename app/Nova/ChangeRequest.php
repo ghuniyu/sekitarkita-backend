@@ -70,6 +70,9 @@ class ChangeRequest extends Resource
                 ->sortable()
                 ->required(),
             Text::make("Nama", 'name')
+                ->displayUsing(function ($resource) {
+                    return ucwords($resource);
+                })
                 ->sortable()
                 ->required(),
             Text::make("Nomor Telepon", 'phone')
