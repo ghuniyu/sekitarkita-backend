@@ -30,3 +30,6 @@ Route::view('/tracking', 'tracking.index')->name('tracking.view')
 
 Route::get('api/track/{device}', 'Api\DeviceController@track')
     ->middleware(config('nova.middleware', []));
+
+Route::view('/filteredTrack', 'tracking.filtered')->name('tracking.filtered')
+    ->middleware(config('nova.middleware', []));

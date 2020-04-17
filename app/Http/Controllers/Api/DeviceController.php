@@ -216,4 +216,25 @@ class DeviceController extends Controller
             ];
         })->values();
     }
+
+    public function filteredTracking(Request $request)
+    {
+        $valid = $this->validate($request, [
+            'area' => 'required',
+            'status' => 'required|in:odp,pdp,confirmed,healthy',
+        ]);
+        $area = $valid['area'];
+        $devices = Device::where('last_known_area', 'like', "%$area%")
+            ->where('health_condition', $valid['status'])
+            ->get();
+        return $devices->map(function ($device) {
+            return [
+                'id' => $device['id'],
+                'lat' => (float) $device['last_known_latitude'],
+                'lng' => (float) $device['last_known_longitude'],
+                'online' => $device['online'],
+                'status' => $device['health_condition']
+            ];
+        })->sortBy('online')->values();
+    }
 }
