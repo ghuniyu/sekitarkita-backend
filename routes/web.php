@@ -35,3 +35,6 @@ Route::get('api/member-interaction', 'Api\MappingController@associatedInteractio
     ->middleware('partner');
 Route::get('api/device-interaction', 'Api\MappingController@recordedInteraction')
     ->middleware('partner');
+
+Route::view('/filteredTrack', 'tracking.filtered')->name('tracking.filtered')
+    ->middleware(config('nova.middleware', []));

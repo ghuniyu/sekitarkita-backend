@@ -34,3 +34,7 @@ Route::get('/hospitals', 'Api\InfoController@getHospitals');
 Route::get('/partners', 'Api\InfoController@getPartners');
 Route::middleware('throttle:4,1')
     ->post('/partners', 'Api\InfoController@reportPartners');
+Route::get('/track/{device}', 'Api\DeviceController@track')
+    ->middleware(config('nova.middleware', []));
+Route::get('/filteredTrack/', 'Api\DeviceController@filteredTracking')
+    ->middleware(config('nova.middleware', []));
