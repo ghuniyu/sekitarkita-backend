@@ -28,6 +28,8 @@ Route::view('/mapping-puppeteer', 'mapping.mapping-for-puppeteer');
 
 Route::view('/tracking', 'tracking.index')->name('tracking.view')
     ->middleware(config('nova.middleware', []));
+Route::view('/filteredTrack', 'tracking.filtered')->name('tracking.filtered')
+    ->middleware(config('nova.middleware', []));
 
 Route::get('api/track/{device}', 'Api\DeviceController@track')
     ->middleware(config('nova.middleware', []));
@@ -35,6 +37,6 @@ Route::get('api/member-interaction', 'Api\MappingController@associatedInteractio
     ->middleware('partner');
 Route::get('api/device-interaction', 'Api\MappingController@recordedInteraction')
     ->middleware('partner');
-
-Route::view('/filteredTrack', 'tracking.filtered')->name('tracking.filtered')
+Route::get('api/filteredTrack/', 'Api\DeviceController@filteredTracking')
     ->middleware(config('nova.middleware', []));
+
