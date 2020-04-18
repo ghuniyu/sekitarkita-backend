@@ -152,12 +152,27 @@
 <div id="map"></div>
 <script src="{{ mix('js/app.js') }}"></script>
 <script>
+    const healthConditions = {
+        healthy: 'Sehat',
+        odp: 'ODP',
+        pdp: 'PDP',
+        confirmed: 'Positif'
+    };
+
     function initMap() {
         let map = new google.maps.Map(document.getElementById('map'), {
             zoom: 6,
             center: {lat: -5.016889, lng: 115.268380},
             mapTypeId: 'terrain'
         });
+
+        let oms = new OverlappingMarkerSpiderfier(map, {
+            markersWontMove: true,   // we promise not to move any markers, allowing optimizations
+            markersWontHide: true,   // we promise not to change visibility of any markers, allowing optimizations
+            basicFormatEvents: true  // allow the library to skip calculating advanced formatting information
+        });
+
+        let iw = new google.maps.InfoWindow();
 
         fetch('/api/filteredTrack?area={{urldecode(request()->query('area'))}}&status={{urldecode(request()->query('status'))}}')
             .then((response) => {
@@ -186,11 +201,23 @@
                         icon: icon
                     });
                     markers.push(marker);
+                    google.maps.event.addListener(marker, 'spider_click', function (e) {
+                        const trackingLink = `/tracking?device_id=${dot.id}`;
+                        const deviceLink = `/free-corona/resources/devices/${dot.id}`;
+                        iw.setContent(`
+                            <h4>Perangkat: <b><a style="text-decoration: underline" href='${deviceLink}'>${dot.id}</a></b></h4>
+                            <h5>Status Kesehatan: ${healthConditions[dot.status]}</h5>
+                            <div><a target="_blank" href='${trackingLink}'><b>Lihat Riwayat Perangkat</b></a></div>
+                        `);
+                        iw.open(map, marker);
+                    });
+                    oms.addMarker(marker);
                 });
 
-                new MarkerClusterer(map, markers, {imagePath: '/images/markers/m'});
+                const clusters = new MarkerClusterer(map, markers, {imagePath: '/images/markers/m'});
                 map.setCenter(data[0]);
                 smoothZoom(map, 15, map.getZoom());
+                clusters.setMaxZoom(20);
             });
 
     }
@@ -208,10 +235,12 @@
             }, 80);
         }
     }
+
 </script>
 <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6mkQ6GhwmY42Nu7HmAirqyRMDb6dkpdc&callback=initMap">
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier/1.0.3/oms.min.js"></script>
 </body>
 </html>

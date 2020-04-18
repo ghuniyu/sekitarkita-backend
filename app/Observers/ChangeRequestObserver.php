@@ -24,7 +24,7 @@ class ChangeRequestObserver
 
             if ($changeRequest['health_condition'] !== 'healthy') {
                 $localPrefix = $user['prefix'];
-                $localNumbering = $localPrefix . '-' . Sequence::getNextNumber($localPrefix);
+                $localNumbering = $localPrefix ? $localPrefix . '-' . Sequence::getNextNumber($localPrefix) : null;
                 $globalPrefix = "sekitar";
                 $globalNumbering = $globalPrefix . '-' . Sequence::getNextNumber($globalPrefix);
             }
