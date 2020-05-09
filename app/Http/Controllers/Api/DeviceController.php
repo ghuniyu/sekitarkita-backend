@@ -81,7 +81,7 @@ class DeviceController extends Controller
         $valid['status'] = 'pending';
         $valid['health_condition'] = $valid['health'];
 
-        if (isset($valid['nik']) && isset($valid['name'])) {
+        /*if (isset($valid['nik']) && isset($valid['name'])) {
             $response = Http::withBasicAuth(env('CHECKER_KEY'), env('CHECKER_VALUE'))
                 ->post(env('CHECKER_URL'), [
                     'nik' => $valid['nik'],
@@ -118,9 +118,20 @@ class DeviceController extends Controller
                     'message' => 'gagal melakukan validasi data'
                 ]);
             }
+        }*/
+
+        $hasCr = ChangeRequest::firstOrCreate([
+            'device_id' => $valid['device_id'],
+            'status' => 'pending',
+        ], $valid);
+
+        if (!$hasCr->wasRecentlyCreated) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah melakukan pengajuan sebelumnya, silahkan menunggu proses verifikasi'
+            ]);
         }
 
-        ChangeRequest::create($valid);
         return response()->json([
             'success' => true,
             'message' => 'Pengajuan anda akan segera diproses'
