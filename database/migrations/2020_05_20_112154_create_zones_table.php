@@ -1,10 +1,11 @@
 <?php
 
+use App\Enums\ZoneLevel;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterTableUserAddPrefixAttribute extends Migration
+class CreateZonesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +14,11 @@ class AlterTableUserAddPrefixAttribute extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('prefix')->nullable();
+        Schema::create('zones', function (Blueprint $table) {
+            $table->id();
+            $table->string('area');
+            $table->enum('status', ZoneLevel::getValues());
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ class AlterTableUserAddPrefixAttribute extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('prefix');
-        });
+        Schema::dropIfExists('zones');
     }
 }

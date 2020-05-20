@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Enums\HealthStatus;
 use App\Models\ChangeRequest;
 use App\Models\Sequence;
 
@@ -22,14 +23,14 @@ class ChangeRequestObserver
             $localNumbering = null;
             $globalNumbering = null;
 
-            if ($changeRequest['health_condition'] !== 'healthy') {
+            if ($changeRequest['user_status'] !== HealthStatus::HEALTHY) {
                 $localPrefix = $user['prefix'];
                 $localNumbering = $localPrefix ? $localPrefix . '-' . Sequence::getNextNumber($localPrefix) : null;
                 $globalPrefix = "sekitar";
                 $globalNumbering = $globalPrefix . '-' . Sequence::getNextNumber($globalPrefix);
             }
             $changeRequest->device->update([
-                'health_condition' => $changeRequest['health_condition'],
+                'user_status' => $changeRequest['user_status'],
                 'name' => $changeRequest['name'],
                 'nik' => $changeRequest['nik'],
                 'local_numbering' => $localNumbering,

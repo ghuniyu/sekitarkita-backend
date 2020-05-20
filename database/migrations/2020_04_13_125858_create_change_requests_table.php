@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\ChangeRequestStatus;
+use App\Enums\HealthStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,8 +19,11 @@ class CreateChangeRequestsTable extends Migration
             $table->id();
             $table->string('device_id');
             $table->foreign('device_id')->references('id')->on('devices');
-            $table->enum('health_condition', ['healthy', 'pdp', 'odp', 'confirmed']);
-            $table->enum('status', ['pending', 'approve', 'reject']);
+            $table->enum('user_status', HealthStatus::getValues());
+            $table->string('nik')->nullable();
+            $table->string('name')->nullable();
+            $table->string('phone')->nullable();
+            $table->enum('status', ChangeRequestStatus::getValues());
             $table->timestamps();
         });
     }

@@ -2,6 +2,8 @@
 
 namespace App\Nova;
 
+use App\Enums\ChangeRequestStatus;
+use App\Enums\HealthStatus;
 use App\Nova\Filters\ChangeRequestFilter;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
@@ -32,7 +34,7 @@ class ChangeRequest extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'status', 'health_condition', 'nik', 'name', 'phone'
+        'id', 'status', 'user_status', 'nik', 'name', 'phone'
     ];
 
     public static function indexQuery(NovaRequest $request, $query)
@@ -56,15 +58,15 @@ class ChangeRequest extends Resource
     {
         return [
             BelongsTo::make('Device'),
-            Select::make('Merubah ke', 'health_condition')
+            Select::make('Merubah ke', 'user_status')
                 ->displayUsingLabels()
-                ->options(['healthy' => 'Sehat', 'pdp' => 'PDP', 'odp' => 'ODP', 'confirmed' => 'Positif'])
+                ->options(HealthStatus::toSelectArray())
                 ->sortable()
                 ->required(),
             Select::make('Status Pengajuan', 'status')
                 ->displayUsingLabels()
                 ->sortable()
-                ->options(['pending' => 'Menunggu Verifikasi', 'approve' => 'Diterima', 'reject' => 'Ditolak'])
+                ->options(ChangeRequestStatus::toSelectArray())
                 ->required(),
             Text::make("NIK", 'nik')
                 ->sortable()
@@ -103,12 +105,12 @@ class ChangeRequest extends Resource
         return [
             (new ChangeRequestFilter(
                 'status',
-                ['Menunggu Verifikasi' => 'pending', 'Diterima' => 'approve', 'Ditolak' => 'reject'],
+                array_flip(ChangeRequestStatus::toSelectArray()),
                 'Status Pengajuan'
             )),
             (new ChangeRequestFilter(
-                'health_condition',
-                ['Sehat' => 'healthy', 'PDP' => 'pdp', 'ODP' => 'odp', 'Positif' => 'confirmed'],
+                'user_status',
+                array_flip(HealthStatus::toSelectArray()),
                 'Status Kesehatan'
             )),
         ];

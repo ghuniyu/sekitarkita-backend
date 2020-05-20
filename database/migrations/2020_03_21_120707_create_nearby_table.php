@@ -17,10 +17,12 @@ class CreateNearbyTable extends Migration
             $table->id();
             $table->string('device_id');
             $table->foreign('device_id')->references('id')->on('devices');
+            $table->string('device_name')->nullable();
             $table->string('another_device');
             $table->unique(['device_id', 'another_device']);
-            $table->float('latitude')->nullable();
-            $table->float('longitude')->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->double('speed')->nullable();
             $table->timestamps();
         });
     }

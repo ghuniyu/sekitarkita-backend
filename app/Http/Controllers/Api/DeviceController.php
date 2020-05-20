@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ChangeRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ChangeRequest;
 use App\Models\Device;
@@ -78,8 +79,8 @@ class DeviceController extends Controller
             'nik' => 'sometimes|numeric|digits:16',
             'name' => 'sometimes|string',
         ]);
-        $valid['status'] = 'pending';
-        $valid['health_condition'] = $valid['health'];
+        $valid['status'] = ChangeRequestStatus::PENDING;
+        $valid['user_status'] = $valid['health'];
 
         /*if (isset($valid['nik']) && isset($valid['name'])) {
             $response = Http::withBasicAuth(env('CHECKER_KEY'), env('CHECKER_VALUE'))
@@ -122,7 +123,7 @@ class DeviceController extends Controller
 
         $hasCr = ChangeRequest::firstOrCreate([
             'device_id' => $valid['device_id'],
-            'status' => 'pending',
+            'status' => ChangeRequestStatus::PENDING,
         ], $valid);
 
         if (!$hasCr->wasRecentlyCreated) {
@@ -154,7 +155,7 @@ class DeviceController extends Controller
         if ($device) {
             $device->touch();
             $device->update([
-                'health_condition' => $valid['health'],
+                'user_status' => $valid['health'],
                 'label' => $valid['label'] ?? null,
                 'phone' => $valid['phone'] ?? null
             ]);
@@ -166,7 +167,7 @@ class DeviceController extends Controller
         } else {
             $device = Device::create([
                 'id' => $valid['device_id'],
-                'health_condition' => $valid['health'],
+                'user_status' => $valid['health'],
                 'label' => $valid['label'] ?? null,
                 'phone' => $valid['phone'] ?? null
             ]);
@@ -245,7 +246,7 @@ class DeviceController extends Controller
             }
         });
         $devices->when($valid['status'] !== 'all', function (Builder $query) use ($valid) {
-            return $query->where('health_condition', $valid['status']);
+            return $query->where('user_status', $valid['status']);
         });
 
         $devices = $devices->get();
@@ -255,7 +256,7 @@ class DeviceController extends Controller
                 'lat' => (float)$device['last_known_latitude'],
                 'lng' => (float)$device['last_known_longitude'],
                 'online' => $device['online'],
-                'status' => $device['health_condition']
+                'status' => $device['user_status']
             ];
         })->sortBy('online')->values();
     }
