@@ -11,7 +11,7 @@ final class HealthStatus extends Enum
     const PDP = "pdp";
     const POSITIVE = "positive";
     const OTG = "otg";
-    const ODR = "odr";
+    const TRAVELER = "traveler";
 
     public static function getDescription($value): string
     {
@@ -31,8 +31,8 @@ final class HealthStatus extends Enum
             case self::OTG:
                 return 'Orang Tanpa Gejala';
                 break;
-            case self::ODR:
-                return 'Orang Dalam Risiko / Pendatang';
+            case self::TRAVELER:
+                return 'Pelaku Perjalanan';
                 break;
         }
         return parent::getDescription($value);

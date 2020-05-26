@@ -19,6 +19,7 @@ Route::middleware('throttle:4,1')
 
 Route::post('me', 'Api\DeviceController@getMe');
 Route::post('store-firebase-token', 'Api\DeviceController@storeFirebaseToken');
+Route::post('store-selfcheck', 'Api\DeviceController@storeSelfCheck');
 Route::post('device-history', 'Api\DeviceController@getNearby');
 Route::post('set-health', 'Api\DeviceController@setHealth');
 Route::post('change-status', 'Api\DeviceController@changeRequest');

@@ -8,6 +8,7 @@ use App\Models\ChangeRequest;
 use App\Models\Device;
 use App\Models\DeviceLog;
 use App\Models\Nearby;
+use App\Models\SelfCheck;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -74,7 +75,7 @@ class DeviceController extends Controller
     {
         $valid = $this->validate($request, [
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
-            'health' => 'required|in:healthy,pdp,odp,confirmed,odr',
+            'health' => 'required|in:healthy,pdp,odp,otg,positive,traveler',
             'phone' => 'sometimes|phone:ID',
             'nik' => 'sometimes|numeric|digits:16',
             'name' => 'sometimes|string',
@@ -144,7 +145,7 @@ class DeviceController extends Controller
     {
         $valid = $this->validate($request, [
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
-            'health' => 'required|in:healthy,pdp,odp,confirmed,odr',
+            'health' => 'required|in:healthy,pdp,odp,otg,positive,traveler',
             'label' => 'sometimes|nullable|string',
             'phone' => 'sometimes|phone:ID'
         ]);
@@ -234,7 +235,7 @@ class DeviceController extends Controller
     {
         $valid = $this->validate($request, [
             'area' => 'required',
-            'status' => 'required|in:odp,pdp,confirmed,healthy,all',
+            'status' => 'required|in:healthy,pdp,odp,otg,positive,traveler,all',
         ]);
         $area = $valid['area'];
         $devices = Device::query();
@@ -259,5 +260,28 @@ class DeviceController extends Controller
                 'status' => $device['user_status']
             ];
         })->sortBy('online')->values();
+    }
+
+    public function storeSelfCheck(Request $request)
+    {
+        $valid = $this->validate($request, [
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+            'has_fever' => 'required|boolean',
+            'has_flu' => 'required|boolean',
+            'has_cough' => 'required|boolean',
+            'has_breath_problem' => 'required|boolean',
+            'has_sore_throat' => 'required|boolean',
+            'has_in_infected_country' => 'required|boolean',
+            'has_in_infected_city' => 'required|boolean',
+            'has_direct_contact' => 'required|boolean',
+            'result' => 'required|string|in',
+        ]);
+        $valid['id'] = Str::lower($valid['device_id']);
+
+        SelfCheck::create($valid);
+        return response()->json([
+            'success' => true,
+            'message' => 'Self Check Stored'
+        ]);
     }
 }
