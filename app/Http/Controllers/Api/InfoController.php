@@ -11,16 +11,24 @@ use App\Models\Kecamatan;
 use App\Models\Partner;
 use App\Models\Provinsi;
 use App\Nova\Kabupaten;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use App\Models\CallCenter;
 use App\Models\Hospital;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 
 class InfoController extends Controller
 {
+    const indonesiaCache = 'indonesia-statistics';
+    const provinceCache = 'province-statistics';
+
     public function getCallCenters()
     {
         return response()->json([
@@ -97,5 +105,53 @@ class InfoController extends Controller
             'success' => true,
             'message' => 'Partners Stored',
         ]);
+    }
+
+    /**
+     * @return array|mixed
+     * @throws Exception
+     */
+    public function getIndonesiaStatistics()
+    {
+        try {
+            if (Cache::has(self::indonesiaCache))
+                return Cache::get(self::indonesiaCache);
+
+            $response = Http::get(env('API_KWLCRN') . '/indonesia');
+
+            if ($response->ok()) {
+                $data = $response->json();
+                Cache::put(self::indonesiaCache, $data, now()->addHours(2));
+                return $data;
+            }
+
+            return $response->throw();
+        } catch (Exception $exception) {
+            throw $exception;
+        }
+    }
+
+    /**
+     * @return array|Response|mixed
+     * @throws Exception
+     */
+    public function getProvinceStatistics()
+    {
+        try {
+            if (Cache::has(self::provinceCache))
+                return Cache::get(self::provinceCache);
+
+            $response = Http::get(env('API_KWLCRN') . '/indonesia/provinsi');
+
+            if ($response->ok()) {
+                $data = $response->json();
+                Cache::put(self::provinceCache, $data, now()->addHours(2));
+                return $data;
+            }
+
+            return $response->throw();
+        } catch (Exception $exception) {
+            throw $exception;
+        }
     }
 }

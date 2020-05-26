@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\HealthStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +11,7 @@ class Device extends Model
     protected $appends = ['online'];
 
     protected $fillable = ['id', 'firebase_token', 'label', 'phone', 'device_name',
-        'health_condition','name','nik','local_numbering','global_numbering'];
+        'user_status', 'name', 'nik', 'local_numbering', 'global_numbering'];
 
     public $incrementing = false;
 
@@ -21,17 +22,17 @@ class Device extends Model
 
     public function scopeHealthy($query)
     {
-        return $query->where('health_condition', 'healthy');
+        return $query->where('user_status', HealthStatus::HEALTHY);
     }
 
     public function scopePdp($query)
     {
-        return $query->where('health_condition', 'pdp');
+        return $query->where('user_status', HealthStatus::PDP);
     }
 
     public function scopeOdp($query)
     {
-        return $query->where('health_condition', 'odp');
+        return $query->where('user_status', HealthStatus::ODP);
     }
 
     public function scopeOnline($query)
@@ -42,5 +43,10 @@ class Device extends Model
     public function getOnlineAttribute()
     {
         return $this['updated_at'] > Carbon::now('Asia/Jakarta')->addMinutes(-60);
+    }
+
+    public function selfChecks()
+    {
+        return $this->hasMany(SelfCheck::class);
     }
 }

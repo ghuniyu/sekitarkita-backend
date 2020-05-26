@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ChangeRequestStatus;
+use App\Enums\HealthStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ChangeRequest;
 use App\Models\Device;
 use App\Models\DeviceLog;
 use App\Models\Nearby;
+use App\Models\SelfCheck;
+use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -73,13 +77,13 @@ class DeviceController extends Controller
     {
         $valid = $this->validate($request, [
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
-            'health' => 'required|in:healthy,pdp,odp,confirmed,odr',
+            'health' => 'required|in:healthy,pdp,odp,otg,positive,traveler',
             'phone' => 'sometimes|phone:ID',
             'nik' => 'sometimes|numeric|digits:16',
             'name' => 'sometimes|string',
         ]);
-        $valid['status'] = 'pending';
-        $valid['health_condition'] = $valid['health'];
+        $valid['status'] = ChangeRequestStatus::PENDING;
+        $valid['user_status'] = $valid['health'];
 
         /*if (isset($valid['nik']) && isset($valid['name'])) {
             $response = Http::withBasicAuth(env('CHECKER_KEY'), env('CHECKER_VALUE'))
@@ -122,7 +126,7 @@ class DeviceController extends Controller
 
         $hasCr = ChangeRequest::firstOrCreate([
             'device_id' => $valid['device_id'],
-            'status' => 'pending',
+            'status' => ChangeRequestStatus::PENDING,
         ], $valid);
 
         if (!$hasCr->wasRecentlyCreated) {
@@ -143,7 +147,7 @@ class DeviceController extends Controller
     {
         $valid = $this->validate($request, [
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
-            'health' => 'required|in:healthy,pdp,odp,confirmed,odr',
+            'health' => 'required|in:healthy,pdp,odp,otg,positive,traveler',
             'label' => 'sometimes|nullable|string',
             'phone' => 'sometimes|phone:ID'
         ]);
@@ -154,7 +158,7 @@ class DeviceController extends Controller
         if ($device) {
             $device->touch();
             $device->update([
-                'health_condition' => $valid['health'],
+                'user_status' => $valid['health'],
                 'label' => $valid['label'] ?? null,
                 'phone' => $valid['phone'] ?? null
             ]);
@@ -166,7 +170,7 @@ class DeviceController extends Controller
         } else {
             $device = Device::create([
                 'id' => $valid['device_id'],
-                'health_condition' => $valid['health'],
+                'user_status' => $valid['health'],
                 'label' => $valid['label'] ?? null,
                 'phone' => $valid['phone'] ?? null
             ]);
@@ -233,7 +237,7 @@ class DeviceController extends Controller
     {
         $valid = $this->validate($request, [
             'area' => 'required',
-            'status' => 'required|in:odp,pdp,confirmed,healthy,all',
+            'status' => 'required|in:healthy,pdp,odp,otg,positive,traveler,all',
         ]);
         $area = $valid['area'];
         $devices = Device::query();
@@ -245,7 +249,7 @@ class DeviceController extends Controller
             }
         });
         $devices->when($valid['status'] !== 'all', function (Builder $query) use ($valid) {
-            return $query->where('health_condition', $valid['status']);
+            return $query->where('user_status', $valid['status']);
         });
 
         $devices = $devices->get();
@@ -255,8 +259,46 @@ class DeviceController extends Controller
                 'lat' => (float)$device['last_known_latitude'],
                 'lng' => (float)$device['last_known_longitude'],
                 'online' => $device['online'],
-                'status' => $device['health_condition']
+                'status' => $device['user_status']
             ];
         })->sortBy('online')->values();
+    }
+
+    public function storeSelfCheck(Request $request)
+    {
+        $valid = $this->validate($request, [
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+            'has_fever' => 'required|boolean',
+            'has_flu' => 'required|boolean',
+            'has_cough' => 'required|boolean',
+            'has_breath_problem' => 'required|boolean',
+            'has_sore_throat' => 'required|boolean',
+            'has_in_infected_country' => 'required|boolean',
+            'has_in_infected_city' => 'required|boolean',
+            'has_direct_contact' => 'required|boolean',
+            'name' => 'required|string',
+            'phone' => 'required|string',
+            'result' => ['required','string', new EnumValue(HealthStatus::class)]
+        ]);
+        $valid['device_id'] = Str::lower($valid['device_id']);
+
+        $device = Device::firstOrCreate(
+            ['id' => $valid['device_id']],
+            [
+                'name' => $valid['name'],
+                'phone' => $valid['phone'],
+            ]
+        );
+        if (!$device->wasRecentlyCreated){
+            $device['name'] = $valid['name'];
+            $device['phone'] = $valid['phone'];
+            $device->save();
+        }
+
+        SelfCheck::create($valid);
+        return response()->json([
+            'success' => true,
+            'message' => 'Self Check Stored'
+        ]);
     }
 }

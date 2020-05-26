@@ -1,10 +1,11 @@
 <?php
 
+use App\Enums\ZoneLevel;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterTableUserAddRoleAttribute extends Migration
+class CreateZonesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +14,14 @@ class AlterTableUserAddRoleAttribute extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::create('zones', function (Blueprint $table) {
+            $table->id();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->string('area')->nullable();
-            $table->string('domain_access')->nullable();
+            $table->enum('status', ZoneLevel::getValues());
+            $table->timestamps();
         });
-
     }
 
     /**
@@ -27,9 +31,6 @@ class AlterTableUserAddRoleAttribute extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('area');
-            $table->dropColumn('domain_access');
-        });
+        Schema::dropIfExists('zones');
     }
 }

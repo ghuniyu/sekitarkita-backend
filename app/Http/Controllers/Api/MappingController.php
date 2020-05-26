@@ -23,7 +23,7 @@ class MappingController extends Controller
 
             $devices = $devices->get();
             if ($request->get('only')) {
-                $filtered = $devices->where('health_condition', $request->get('only'));
+                $filtered = $devices->where('user_status', $request->get('only'));
                 $known_nearby = Nearby::whereIn('device_id', $filtered->pluck('id'))->get();
             } else {
                 $filtered = $devices;
@@ -44,12 +44,12 @@ class MappingController extends Controller
                     ],
                     "shape" => "image",
                     "color" => "#97C2FC",
-                    "image" => '/images/icons/smartphone_' . $device['health_condition'] . '.svg'
+                    "image" => '/images/icons/smartphone_' . $device['user_status'] . '.svg'
                 ]);
             }
 
             foreach ($known_nearby as $data) {
-                $health = $devices->firstWhere('id', $data['another_device'])['health_condition'];
+                $health = $devices->firstWhere('id', $data['another_device'])['user_status'];
                 $nodes->push([
                     'id' => $data['another_device'],
                     'label' => $data['another_device'],
@@ -96,7 +96,7 @@ class MappingController extends Controller
                     ],
                     "shape" => "image",
                     "color" => "#97C2FC",
-                    "image" => '/images/icons/smartphone_' . $n['health_condition'] . '.svg'
+                    "image" => '/images/icons/smartphone_' . $n['user_status'] . '.svg'
                 ];
             });
 

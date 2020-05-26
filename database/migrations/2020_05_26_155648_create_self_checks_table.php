@@ -1,12 +1,11 @@
 <?php
 
-use App\Enums\ChangeRequestStatus;
 use App\Enums\HealthStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateChangeRequestsTable extends Migration
+class CreateSelfChecksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,15 +14,21 @@ class CreateChangeRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('change_requests', function (Blueprint $table) {
+        Schema::create('self_checks', function (Blueprint $table) {
             $table->id();
             $table->string('device_id');
             $table->foreign('device_id')->references('id')->on('devices');
-            $table->enum('user_status', HealthStatus::getValues());
-            $table->string('nik')->nullable();
             $table->string('name')->nullable();
             $table->string('phone')->nullable();
-            $table->enum('status', ChangeRequestStatus::getValues());
+            $table->boolean('has_direct_contact');
+            $table->boolean('has_fever');
+            $table->boolean('has_flu');
+            $table->boolean('has_cough');
+            $table->boolean('has_breath_problem');
+            $table->boolean('has_sore_throat');
+            $table->boolean('has_in_infected_country');
+            $table->boolean('has_in_infected_city');
+            $table->enum('result', HealthStatus::getValues());
             $table->timestamps();
         });
     }
@@ -35,6 +40,6 @@ class CreateChangeRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('change_requests');
+        Schema::dropIfExists('self_checks');
     }
 }

@@ -55,7 +55,7 @@ class Device extends Resource
                 ->hideWhenUpdating()
                 ->format("D-MM-Y hh:mm:ss")
                 ->sortable(),
-            Select::make(__('Health Condition'), 'health_condition')
+            Select::make(__('Health Condition'), 'user_status')
                 ->options(['healthy' => 'Sehat', 'pdp' => 'PDP', 'odp' => 'ODP', 'confirmed' => 'Positif'])
                 ->displayUsingLabels()
                 ->required()

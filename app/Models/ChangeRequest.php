@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChangeRequest extends Model
 {
-    protected $fillable = ['device_id', 'health_condition', 'status', 'nik', 'name', 'phone'];
+    protected $fillable = ['device_id', 'user_status', 'status', 'nik', 'name', 'phone'];
 
     public function device()
     {

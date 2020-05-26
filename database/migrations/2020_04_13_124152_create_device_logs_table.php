@@ -17,6 +17,9 @@ class CreateDeviceLogsTable extends Migration
             $table->id();
             $table->string('device_id');
             $table->foreign('device_id')->references('id')->on('devices');
+            $table->string('nearby_device')->nullable();
+            $table->string('area')->nullable();
+            $table->double('speed')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
