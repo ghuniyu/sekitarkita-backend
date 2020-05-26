@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\ChangeRequestStatus;
+use App\Enums\HealthStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ChangeRequest;
 use App\Models\Device;
 use App\Models\DeviceLog;
 use App\Models\Nearby;
 use App\Models\SelfCheck;
+use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -274,9 +276,9 @@ class DeviceController extends Controller
             'has_in_infected_country' => 'required|boolean',
             'has_in_infected_city' => 'required|boolean',
             'has_direct_contact' => 'required|boolean',
-            'result' => 'required|string|in',
-            'name' => 'required|string|in',
-            'phone' => 'required|string|in',
+            'name' => 'required|string',
+            'phone' => 'required|string',
+            'result' => ['required','string', new EnumValue(HealthStatus::class)]
         ]);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
