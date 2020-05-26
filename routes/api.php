@@ -32,6 +32,8 @@ Route::get('/', function () {
 
 Route::get('/call-centers', 'Api\InfoController@getCallCenters');
 Route::get('/hospitals', 'Api\InfoController@getHospitals');
+Route::get('/indonesia-statistics', 'Api\InfoController@getIndonesiaStatistics');
+Route::get('/province-statistics', 'Api\InfoController@getProvinceStatistics');
 Route::get('/partners', 'Api\InfoController@getPartners');
 Route::middleware('throttle:4,1')
     ->post('/partners', 'Api\InfoController@reportPartners');
