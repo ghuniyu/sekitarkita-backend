@@ -2,27 +2,29 @@
 
 namespace App\Nova;
 
-use App\Enums\ZoneLevel;
-use GeneaLabs\NovaMapMarkerField\MapMarker;
+use App\Enums\HealthStatus;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Zone extends Resource
+class SelfCheck extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'App\Models\Zone';
+    public static $model = 'App\Models\SelfCheck';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'result';
 
     /**
      * The columns that should be searched.
@@ -30,7 +32,7 @@ class Zone extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'result',
     ];
 
     /**
@@ -42,15 +44,20 @@ class Zone extends Resource
     public function fields(Request $request)
     {
         return [
-            MapMarker::make('Lokasi')
-                ->defaultLatitude('-6.914744')
-                ->defaultLongitude('107.609810')
-                ->rules(['required', 'numeric']),
-            Text::make('Area')
-                ->sortable(),
-            Select::make('Zona', 'status')
+            BelongsTo::make('Device', 'device', Device::class)
+                ->sortable()
+                ->searchable(),
+            Boolean::make('Demam dalam 14 hari?', 'has_fever'),
+            Boolean::make('Flu?', 'has_flu'),
+            Boolean::make('Batuk?', 'has_cough'),
+            Boolean::make('Sesak Nafas?', 'has_breath_problem'),
+            Boolean::make('Nyeri Tenggorokan?', 'has_sore_throat'),
+            Boolean::make('Pernah di Negara Transimisi?', 'has_in_infected_country'),
+            Boolean::make('Pernah di Kota Transimisi?', 'has_in_infected_city'),
+            Boolean::make('Berinteraksi langsung dengan pasien positif / Faskes?', 'has_direct_contact'),
+            Select::make('Hasil', 'result')
                 ->displayUsingLabels()
-                ->options(ZoneLevel::toSelectArray()),
+                ->options(HealthStatus::toSelectArray()),
         ];
     }
 
