@@ -275,8 +275,23 @@ class DeviceController extends Controller
             'has_in_infected_city' => 'required|boolean',
             'has_direct_contact' => 'required|boolean',
             'result' => 'required|string|in',
+            'name' => 'required|string|in',
+            'phone' => 'required|string|in',
         ]);
-        $valid['id'] = Str::lower($valid['device_id']);
+        $valid['device_id'] = Str::lower($valid['device_id']);
+
+        $device = Device::firstOrCreate(
+            ['id' => $valid['device_id']],
+            [
+                'name' => $valid['name'],
+                'phone' => $valid['phone'],
+            ]
+        );
+        if (!$device->wasRecentlyCreated){
+            $device['name'] = $valid['name'];
+            $device['phone'] = $valid['phone'];
+            $device->save();
+        }
 
         SelfCheck::create($valid);
         return response()->json([

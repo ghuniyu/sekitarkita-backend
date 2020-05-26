@@ -18,6 +18,9 @@ class CreateSelfChecksTable extends Migration
             $table->id();
             $table->string('device_id');
             $table->foreign('device_id')->references('id')->on('devices');
+            $table->string('name')->nullable();
+            $table->string('phone')->nullable();
+            $table->boolean('has_direct_contact');
             $table->boolean('has_fever');
             $table->boolean('has_flu');
             $table->boolean('has_cough');
@@ -25,7 +28,6 @@ class CreateSelfChecksTable extends Migration
             $table->boolean('has_sore_throat');
             $table->boolean('has_in_infected_country');
             $table->boolean('has_in_infected_city');
-            $table->boolean('has_direct_contact');
             $table->enum('result', HealthStatus::getValues());
             $table->timestamps();
         });

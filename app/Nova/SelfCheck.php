@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class SelfCheck extends Resource
@@ -32,7 +33,7 @@ class SelfCheck extends Resource
      * @var array
      */
     public static $search = [
-        'result',
+        'result', 'name', 'phone'
     ];
 
     /**
@@ -47,6 +48,10 @@ class SelfCheck extends Resource
             BelongsTo::make('Device', 'device', Device::class)
                 ->sortable()
                 ->searchable(),
+            Text::make('Nama', 'name')
+                ->sortable(),
+            Text::make('Nomor Telepon', 'phone')
+                ->sortable(),
             Boolean::make('Demam dalam 14 hari?', 'has_fever'),
             Boolean::make('Flu?', 'has_flu'),
             Boolean::make('Batuk?', 'has_cough'),
