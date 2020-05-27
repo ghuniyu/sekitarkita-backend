@@ -2,7 +2,9 @@
 
 namespace App\Nova;
 
+use App\Enums\HealthStatus;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Select;
@@ -56,11 +58,12 @@ class Device extends Resource
                 ->format("D-MM-Y hh:mm:ss")
                 ->sortable(),
             Select::make(__('Health Condition'), 'user_status')
-                ->options(['healthy' => 'Sehat', 'pdp' => 'PDP', 'odp' => 'ODP', 'confirmed' => 'Positif'])
+                ->options(HealthStatus::toSelectArray())
                 ->displayUsingLabels()
                 ->required()
                 ->sortable(),
             Text::make('Area', 'last_known_area'),
+            Boolean::make('Banned'),
             RelationshipCount::make('Riwayat Interaksi', 'nearbies')
                 ->sortable(),
             HasMany::make('Riwayat Interaksi', 'nearbies', Nearby::class),
