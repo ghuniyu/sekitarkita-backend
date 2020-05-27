@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DeviceLog extends Model
 {
     protected $fillable = [
-        'device_id', 'nearby_device', 'latitude', 'longitude', 'speed', 'area'
+        'device_id', 'nearby_device', 'latitude', 'longitude', 'speed', 'area', 'device_name'
     ];
 
     public function device()

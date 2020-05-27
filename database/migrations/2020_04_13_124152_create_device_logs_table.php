@@ -20,6 +20,7 @@ class CreateDeviceLogsTable extends Migration
             $table->string('nearby_device')->nullable();
             $table->string('area')->nullable();
             $table->double('speed')->nullable();
+            $table->string('device_name')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
