@@ -32,13 +32,18 @@ class DeviceController extends Controller
         $valid['nearby_device'] = Str::lower($valid['nearby_device']);
         $device = Device::firstOrCreate([
             'id' => Str::lower($valid['device_id'])
-        ], $valid);
+        ], $valid['device_id']);
 
         abort_if($device->banned, 403, "Device ID ini di Banned");
 
         DeviceLog::create($valid);
 
         $nearby_device = Device::find($valid['nearby_device']);
+        if ($nearby_device){
+            $nearby_device['device_name'] = $valid['device_name'];
+            $nearby_device->save();
+        }
+
         $device->touch();
 
         Nearby::updateOrCreate([
