@@ -27,6 +27,7 @@ use Illuminate\Support\Str;
 class InfoController extends Controller
 {
     const indonesiaCache = 'indonesia-statistics';
+    const gorontaloCache = 'gorontalo-statistics';
     const provinceCache = 'province-statistics';
 
     public function getCallCenters()
@@ -152,6 +153,30 @@ class InfoController extends Controller
             return $response->throw();
         } catch (Exception $exception) {
             throw $exception;
+        }
+    }
+
+    /**
+     * @return array|Response|mixed
+     * @throws Exception
+     */
+    public function getGorontaloStatistics()
+    {
+        try {
+            if (Cache::has(self::gorontaloCache))
+                return Cache::get(self::gorontaloCache);
+
+            $response = Http::get(env('API_GTO') . '/api/virus-gorontalo');
+
+            if ($response->ok()) {
+                $data = $response->json();
+                Cache::put(self::gorontaloCache, $data, now()->addHours(2));
+                return $data;
+            }
+
+            return $response->throw();
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 }
