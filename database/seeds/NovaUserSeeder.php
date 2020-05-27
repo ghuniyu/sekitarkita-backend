@@ -17,5 +17,14 @@ class NovaUserSeeder extends Seeder
             'email' => 'admin@sekitarkita.id',
             'password' => '$2y$10$KoGXJOk4Q.ry5O55MJ4wU.g1sXYfBZt4rD3jHevB20ip.GRbG00cO'
         ]);
+
+        User::create([
+            'name' => 'Admin Gorontalo',
+            'email' => 'gorontalo@sekitarkita.id',
+            'area' => 'gorontalo',
+            'domain_access' => 'gorontalo.sekitarkita.id',
+            'prefix' => 'GTO',
+            'password' => '$2y$10$DSAxGdMDZ7m5HNtNixJJYO8nIDDLbYkOC.xsQnF29pYwP9.m4Wxsi'
+        ]);
     }
 }
