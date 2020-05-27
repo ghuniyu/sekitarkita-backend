@@ -32,6 +32,8 @@ class DeviceController extends Controller
             'id' => Str::lower($valid['device_id'])
         ], $valid);
 
+        abort_if($device->banned, 403, "Device ID ini di Banned");
+
         DeviceLog::create($valid);
 
         $nearby_device = Device::find($valid['nearby_device']);
@@ -62,6 +64,8 @@ class DeviceController extends Controller
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id'
         ]);
 
+        abort_if(Device::find($valid['device_id'])->banned, 403, "Device ID ini di Banned");
+
         $valid['device_id'] = Str::lower($valid['device_id']);
 
         $device = Device::find($valid['device_id']);
@@ -80,6 +84,8 @@ class DeviceController extends Controller
             'nik' => 'sometimes|numeric|digits:16',
             'name' => 'sometimes|string',
         ]);
+
+        abort_if(Device::find($valid['device_id'])->banned, 403, "Device ID ini di Banned");
         $valid['status'] = ChangeRequestStatus::PENDING;
         $valid['user_status'] = $valid['health'];
 
@@ -140,46 +146,6 @@ class DeviceController extends Controller
         ]);
     }
 
-//    TODO : Going to Deprecated soon
-    public function setHealth(Request $request)
-    {
-        $valid = $this->validate($request, [
-            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
-            'health' => 'required|in:healthy,pdp,odp,otg,positive,traveler',
-            'label' => 'sometimes|nullable|string',
-            'phone' => 'sometimes|phone:ID'
-        ]);
-
-        $valid['device_id'] = Str::lower($valid['device_id']);
-
-        $device = Device::find($valid['device_id']);
-        if ($device) {
-            $device->touch();
-            $device->update([
-                'user_status' => $valid['health'],
-                'label' => $valid['label'] ?? null,
-                'phone' => $valid['phone'] ?? null
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'device' => $device,
-            ]);
-        } else {
-            $device = Device::create([
-                'id' => $valid['device_id'],
-                'user_status' => $valid['health'],
-                'label' => $valid['label'] ?? null,
-                'phone' => $valid['phone'] ?? null
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'device' => $device
-            ]);
-        }
-    }
-
     public function storeFirebaseToken(Request $request)
     {
         $valid = $this->validate($request, [
@@ -188,6 +154,8 @@ class DeviceController extends Controller
         ]);
 
         $device = Device::firstOrCreate(['id' => Str::lower($valid['device_id'])]);
+        abort_if($device->banned, 403, "Device ID ini di Banned");
+
         if (!$device->wasRecentlyCreated) {
             $device['firebase_token'] = $valid['firebase_token'];
             $device->save();
@@ -203,6 +171,8 @@ class DeviceController extends Controller
         $valid = $this->validate($request, [
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
         ]);
+        abort_if(Device::find($valid['device_id'])->banned, 403, "Device ID ini di Banned");
+
         return Device::find($valid['device_id']);
     }
 
@@ -287,6 +257,8 @@ class DeviceController extends Controller
                 'phone' => $valid['phone'],
             ]
         );
+        abort_if(Device::find($valid['device_id'])->banned, 403, "Device ID ini di Banned");
+
         if (!$device->wasRecentlyCreated){
             $device['name'] = $valid['name'];
             $device['phone'] = $valid['phone'];
