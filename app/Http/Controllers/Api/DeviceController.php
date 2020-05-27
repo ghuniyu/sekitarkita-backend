@@ -205,7 +205,13 @@ class DeviceController extends Controller
         $valid = $this->validate($request, [
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
         ]);
-        return Device::find($valid['device_id']);
+
+        $device = Device::find($valid['device_id']);
+        return response()->json([
+            'id' => $device['id'],
+            'name' => $device['name'],
+            'user_status' => $device['user_status']
+        ]);
     }
 
     public function track(Request $request, Device $device)
@@ -278,7 +284,7 @@ class DeviceController extends Controller
             'has_direct_contact' => 'required|boolean',
             'name' => 'required|string',
             'phone' => 'required|string',
-            'result' => ['required','string', new EnumValue(HealthStatus::class)]
+            'result' => ['required', 'string', new EnumValue(HealthStatus::class)]
         ]);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
@@ -289,7 +295,7 @@ class DeviceController extends Controller
                 'phone' => $valid['phone'],
             ]
         );
-        if (!$device->wasRecentlyCreated){
+        if (!$device->wasRecentlyCreated) {
             $device['name'] = $valid['name'];
             $device['phone'] = $valid['phone'];
             $device->save();
