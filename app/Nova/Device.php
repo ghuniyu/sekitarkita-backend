@@ -32,6 +32,8 @@ class Device extends Resource
             Text::make(__('Device MAC'), 'id')
                 ->required()
                 ->sortable(),
+            Boolean::make('Pengguna Aplikasi', 'app_user')
+                ->sortable(),
             Text::make(__('Nama'),'name')
                 ->displayUsing(function ($resource) {
                     return ucwords($resource);

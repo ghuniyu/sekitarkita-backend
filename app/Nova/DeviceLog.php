@@ -63,8 +63,6 @@ class DeviceLog extends Resource
                 ->sortable(),
             Text::make(__('Nama Device Sekitar'), 'device_name')
                 ->sortable(),
-            Boolean::make('Pengguna Aplikasi', 'app_user')
-                ->sortable(),
             MapMarker::make('Lokasi')
                 ->hideFromIndex()
                 ->defaultLatitude('-6.914744')
