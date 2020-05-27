@@ -38,8 +38,11 @@ class DeviceController extends Controller
 
         DeviceLog::create($valid);
 
-        $nearby_device = Device::find($valid['nearby_device']);
-        if ($nearby_device){
+        $nearby_device = Device::firstOrCreate([
+            'id' => $valid['nearby_device']
+        ], $valid);
+
+        if (!$nearby_device->wasRecentlyCreated){
             $nearby_device['device_name'] = $valid['device_name'];
             $nearby_device->save();
         }
