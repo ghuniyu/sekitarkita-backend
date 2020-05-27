@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\ChangeRequestStatus;
+use App\Enums\HealthStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ChangeRequest;
 use App\Models\Device;
 use App\Models\DeviceLog;
 use App\Models\Nearby;
 use App\Models\SelfCheck;
+use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -171,9 +173,14 @@ class DeviceController extends Controller
         $valid = $this->validate($request, [
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
         ]);
-        abort_if(Device::find($valid['device_id'])->banned, 403, "Device ID ini di Banned");
 
-        return Device::find($valid['device_id']);
+        $device = Device::find($valid['device_id']);
+        abort_if($device->banned, 403, "Device ID ini di Banned");
+        return response()->json([
+            'id' => $device['id'],
+            'name' => $device['name'],
+            'user_status' => $device['user_status']
+        ]);
     }
 
     public function track(Request $request, Device $device)
@@ -244,9 +251,9 @@ class DeviceController extends Controller
             'has_in_infected_country' => 'required|boolean',
             'has_in_infected_city' => 'required|boolean',
             'has_direct_contact' => 'required|boolean',
-            'result' => 'required|string|in',
-            'name' => 'required|string|in',
-            'phone' => 'required|string|in',
+            'name' => 'required|string',
+            'phone' => 'required|string',
+            'result' => ['required', 'string', new EnumValue(HealthStatus::class)]
         ]);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
@@ -259,7 +266,7 @@ class DeviceController extends Controller
         );
         abort_if(Device::find($valid['device_id'])->banned, 403, "Device ID ini di Banned");
 
-        if (!$device->wasRecentlyCreated){
+        if (!$device->wasRecentlyCreated) {
             $device['name'] = $valid['name'];
             $device['phone'] = $valid['phone'];
             $device->save();
