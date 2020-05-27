@@ -48,13 +48,13 @@ class DeviceController extends Controller
 
         DeviceLog::create($valid);
 
-        $nearby_device = Device::firstOrCreate([
+        $scanned_device = Device::firstOrCreate([
             'id' => $valid['nearby_device']
         ], $valid);
 
-        if (!$nearby_device->wasRecentlyCreated) {
-            $nearby_device['device_name'] = $valid['device_name'];
-            $nearby_device->save();
+        if (!$scanned_device->wasRecentlyCreated) {
+            $scanned_device['device_name'] = $valid['device_name'] ?? null;
+            $scanned_device->save();
         }
 
         $device->touch();
@@ -74,7 +74,7 @@ class DeviceController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Nearby Stored',
-            'nearby_device' => $nearby_device ?? null
+            'nearby_device' => $scanned_device ?? null
         ]);
     }
 
