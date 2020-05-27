@@ -6,6 +6,7 @@ use App\Nova\Filters\AreaFilter;
 use GeneaLabs\NovaMapMarkerField\MapMarker;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
@@ -58,8 +59,12 @@ class DeviceLog extends Resource
         return [
             BelongsTo::make(__('Device'), 'device', Device::class)
                 ->sortable(),
-            Text::make(__('Device Sekitar'), 'nearby_device'),
-            Text::make(__('Nama Device Sekitar'), 'device_name'),
+            Text::make(__('Device Sekitar'), 'nearby_device')
+                ->sortable(),
+            Text::make(__('Nama Device Sekitar'), 'device_name')
+                ->sortable(),
+            Boolean::make('Pengguna Aplikasi', 'app_user')
+                ->sortable(),
             MapMarker::make('Lokasi')
                 ->hideFromIndex()
                 ->defaultLatitude('-6.914744')
@@ -71,7 +76,7 @@ class DeviceLog extends Resource
             DateTime::make('On Date', 'created_at')
                 ->format("D-MM-Y hh:mm:ss")
                 ->sortable(),
-            Button::make('Lihat Aktifitas')->link(route('tracking.view',  [
+            Button::make('Lihat Aktifitas')->link(route('tracking.view', [
                 'device_id' => $this['device_id']
             ]))->style('primary')
         ];
