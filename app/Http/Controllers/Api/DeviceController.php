@@ -30,9 +30,16 @@ class DeviceController extends Controller
         ]);
 
         $valid['nearby_device'] = Str::lower($valid['nearby_device']);
+        $valid['device_id'] = Str::lower($valid['device_id']);
+
         $device = Device::firstOrCreate([
             'id' => Str::lower($valid['device_id'])
         ], $valid['device_id']);
+
+        if ($device->wasRecentlyCreated){
+            $device['app_user'] = true;
+            $device->save();
+        }
 
         abort_if($device->banned, 403, "Device ID ini di Banned");
 
