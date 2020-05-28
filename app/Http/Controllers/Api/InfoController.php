@@ -80,25 +80,21 @@ class InfoController extends Controller
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'area' => 'nullable|string',
+            'address' => 'nullable|string',
             'speed' => 'required|numeric',
         ]);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
         if ($valid['area'] != null) {
-            $device = Device::find($valid['device_id']);
-            if (!$device) {
-                Device::create([
-                    'id' => $valid['device_id'],
-                    'last_known_area' => $valid['area'],
-                    'last_known_latitude' => $valid['latitude'],
-                    'last_known_longitude' => $valid['longitude'],
-                ]);
-            } else {
-                $device['last_known_area'] = $valid['area'];
-                $device['last_known_latitude'] = $valid['latitude'];
-                $device['last_known_longitude'] = $valid['longitude'];
-                $device->save();
-            }
+            Device::updateOrCreate([
+                'id' => $valid['device_id'],
+            ], [
+                'id' => $valid['device_id'] ?? null,
+                'last_known_area' => $valid['area'] ?? null,
+                'last_known_latitude' => $valid['latitude']  ?? null,
+                'last_known_longitude' => $valid['longitude']  ?? null,
+                'last_known_address' => $valid['address']  ?? null
+            ]);
         }
 
         DeviceLog::create($valid);
