@@ -23,7 +23,7 @@ class Kabupaten extends Resource
      *
      * @var string
      */
-    public static $title = 'nama';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -31,7 +31,7 @@ class Kabupaten extends Resource
      * @var array
      */
     public static $search = [
-        'nama',
+        'name',
     ];
 
     public static $displayInNavigation = false;
@@ -46,13 +46,7 @@ class Kabupaten extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()
-                ->sortable()
-                ->hideFromDetail()
-                ->hideFromIndex()
-                ->hideWhenUpdating()
-                ->hideWhenCreating(),
-            Text::make('nama')->sortable(),
+            Text::make('name')->sortable(),
             BelongsTo::make('Provinsi', 'provinsi', Provinsi::class)
                 ->searchable()
                 ->sortable(),

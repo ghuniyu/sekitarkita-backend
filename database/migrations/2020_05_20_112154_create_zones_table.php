@@ -16,9 +16,7 @@ class CreateZonesTable extends Migration
     {
         Schema::create('zones', function (Blueprint $table) {
             $table->id();
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
-            $table->string('area')->nullable();
+            $table->morphs('area');
             $table->enum('status', ZoneLevel::getValues());
             $table->timestamps();
         });

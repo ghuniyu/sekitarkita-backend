@@ -5,6 +5,7 @@ namespace App\Nova;
 use App\Enums\ZoneLevel;
 use GeneaLabs\NovaMapMarkerField\MapMarker;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 
@@ -42,12 +43,9 @@ class Zone extends Resource
     public function fields(Request $request)
     {
         return [
-            MapMarker::make('Lokasi')
-                ->defaultLatitude('-6.914744')
-                ->defaultLongitude('107.609810')
-                ->rules(['required', 'numeric']),
-            Text::make('Area')
-                ->sortable(),
+            MorphTo::make(__('Wilayah/Kec/Kab/Prov'), 'area')
+                ->types([Kecamatan::class, Kabupaten::class, Provinsi::class, Kelurahan::class])
+                ->searchable(),
             Select::make('Zona', 'status')
                 ->displayUsingLabels()
                 ->options(ZoneLevel::toSelectArray()),

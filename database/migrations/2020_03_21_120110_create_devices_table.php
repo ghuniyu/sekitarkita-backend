@@ -22,11 +22,12 @@ class CreateDevicesTable extends Migration
             $table->string('phone')->nullable();
             $table->string('global_numbering')->unique()->nullable();
             $table->string('local_numbering')->unique()->nullable();
-            $table->enum('user_status', HealthStatus::getValues()); /* TODO : Add Mode Status*/
+            $table->enum('user_status', HealthStatus::getValues());
             $table->string('device_name')->nullable();
             $table->decimal('last_known_latitude', 10, 7)->nullable();
             $table->decimal('last_known_longitude', 10, 7)->nullable();
             $table->string('last_known_area')->nullable();
+            $table->text('last_known_address')->nullable();
             $table->boolean('app_user')->default(false);
             $table->boolean('banned')->default(false);
             $table->string('firebase_token')->nullable();

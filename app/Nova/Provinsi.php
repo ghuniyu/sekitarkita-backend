@@ -22,7 +22,7 @@ class Provinsi extends Resource
      *
      * @var string
      */
-    public static $title = 'nama';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -30,7 +30,7 @@ class Provinsi extends Resource
      * @var array
      */
     public static $search = [
-        'nama',
+        'name',
     ];
 
     /**
@@ -44,19 +44,13 @@ class Provinsi extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->orderBy('nama');
+        return $query->orderBy('name');
     }
 
     public function fields(Request $request)
     {
         return [
-            ID::make()
-                ->sortable()
-                ->hideFromDetail()
-                ->hideFromIndex()
-                ->hideWhenUpdating()
-                ->hideWhenCreating(),
-            Text::make('nama')
+            Text::make('name')
                 ->sortable(),
             HasMany::make('Kabupaten', 'kabupatens', Kabupaten::class)
         ];
