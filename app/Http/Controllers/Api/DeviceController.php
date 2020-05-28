@@ -39,7 +39,7 @@ class DeviceController extends Controller
             'app_user' => true
         ]);
 
-        if (!$device->wasRecentlyCreated){
+        if (!$device->wasRecentlyCreated) {
             $device['app_user'] = true;
             $device->save();
         }
@@ -173,7 +173,13 @@ class DeviceController extends Controller
             'firebase_token' => 'required|string|min:32|max:256'
         ]);
 
-        $device = Device::firstOrCreate(['id' => Str::lower($valid['device_id'])]);
+        $device = Device::firstOrCreate(
+            ['id' => Str::lower($valid['device_id'])],
+            [
+                'app_user' => true,
+                'id' => Str::lower($valid['device_id'])
+            ]
+        );
         abort_if($device->banned, 403, "Device ID ini di Banned");
 
         if (!$device->wasRecentlyCreated) {
@@ -278,6 +284,7 @@ class DeviceController extends Controller
         $device = Device::firstOrCreate(
             ['id' => $valid['device_id']],
             [
+                'app_user' => true,
                 'name' => $valid['name'],
                 'phone' => $valid['phone'],
             ]
