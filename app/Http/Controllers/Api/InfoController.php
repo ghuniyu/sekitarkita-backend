@@ -90,6 +90,7 @@ class InfoController extends Controller
                 'id' => $valid['device_id'],
             ], [
                 'id' => $valid['device_id'] ?? null,
+                'app_user' => true,
                 'last_known_area' => $valid['area'] ?? null,
                 'last_known_latitude' => $valid['latitude']  ?? null,
                 'last_known_longitude' => $valid['longitude']  ?? null,
