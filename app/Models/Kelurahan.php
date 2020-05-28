@@ -4,18 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Kabupaten extends Model
+class Kelurahan extends Model
 {
-    protected $table = 'indonesia_cities';
+    protected $table = 'indonesia_villages';
 
-    public function provinsi()
+    public function kecamatan()
     {
-        return $this->belongsTo(Provinsi::class, 'province_id');
-    }
-
-    public function kecamatans()
-    {
-        return $this->hasMany(Kecamatan::class, 'city_id');
+        return $this->belongsTo(Kecamatan::class, 'district_id');
     }
 
     public function hospitals()

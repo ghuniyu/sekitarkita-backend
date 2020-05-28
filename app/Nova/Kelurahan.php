@@ -4,19 +4,18 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Kecamatan extends Resource
+class Kelurahan extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'App\Models\Kecamatan';
+    public static $model = 'App\Models\Kelurahan';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -39,24 +38,23 @@ class Kecamatan extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function fields(Request $request)
     {
         return [
             Text::make('name')->sortable(),
-            BelongsTo::make('Kabupaten', 'kabupaten', Kabupaten::class)
+            BelongsTo::make('Kecamatan', 'kecamatan', Kecamatan::class)
                 ->searchable()
                 ->sortable(),
-            HasMany::make('Kelurahan', 'kelurahans', Kelurahan::class)
         ];
     }
 
     /**
      * Get the cards available for the request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function cards(Request $request)
@@ -67,7 +65,7 @@ class Kecamatan extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function filters(Request $request)
@@ -78,7 +76,7 @@ class Kecamatan extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function lenses(Request $request)
@@ -89,7 +87,7 @@ class Kecamatan extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function actions(Request $request)
