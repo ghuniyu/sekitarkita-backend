@@ -107,18 +107,11 @@ class InfoController extends Controller
 
         DeviceLog::create($valid);
 
-        if ($zone) {
-            return response()->json([
-                'success' => true,
-                'zone' => $zone['status'],
-                'message' => 'Partners Stored',
-            ]);
-        } else {
-            return response()->json([
-                'success' => true,
-                'message' => 'Partners Stored',
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'zone' => $zone['status'] ?? null,
+            'message' => 'Partners Stored',
+        ]);
     }
 
     /**
