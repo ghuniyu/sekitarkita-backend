@@ -7,11 +7,14 @@ use App\Http\Resources\CallCenterResource;
 use App\Http\Resources\HospitalResource;
 use App\Models\Device;
 use App\Models\DeviceLog;
+use App\Models\Kabupaten;
 use App\Models\Kecamatan;
+use App\Models\Kelurahan;
 use App\Models\Partner;
 use App\Models\Provinsi;
-use App\Nova\Kabupaten;
+use App\Models\Zone;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
@@ -85,6 +88,10 @@ class InfoController extends Controller
         ]);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
+        $zone = Zone::with(['area' => function ($q) use ($valid) {
+            $q->where('name', 'like', '%' . $valid['area'] . '%');
+        }])->get()->whereNotNull('area')->first();
+
         if ($valid['area'] != null) {
             Device::updateOrCreate([
                 'id' => $valid['device_id'],
@@ -92,15 +99,17 @@ class InfoController extends Controller
                 'id' => $valid['device_id'] ?? null,
                 'app_user' => true,
                 'last_known_area' => $valid['area'] ?? null,
-                'last_known_latitude' => $valid['latitude']  ?? null,
-                'last_known_longitude' => $valid['longitude']  ?? null,
-                'last_known_address' => $valid['address']  ?? null
+                'last_known_latitude' => $valid['latitude'] ?? null,
+                'last_known_longitude' => $valid['longitude'] ?? null,
+                'last_known_address' => $valid['address'] ?? null
             ]);
         }
 
         DeviceLog::create($valid);
+
         return response()->json([
             'success' => true,
+            'zone' => $zone['status'] ?? null,
             'message' => 'Partners Stored',
         ]);
     }
