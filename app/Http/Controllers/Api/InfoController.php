@@ -93,8 +93,10 @@ class InfoController extends Controller
         $area = $this->zoneify($valid['area']);
 
         if (isset($valid['area'])) {
-            if (Cache::has(sprintf(self::zoneCache, $valid['area']))) {
-                $zone = Cache::get(sprintf(self::zoneCache, $valid['area']));
+            $zoneCache = sprintf(self::zoneCache, Str::slug($valid['area']));
+
+            if (Cache::has($zoneCache)) {
+                $zone = Cache::get($zoneCache);
             } else {
                 $zone = Zone::with(['area' => function ($q) use ($area) {
                     $q->where('name', 'like', '%' . trim($area[0]) ?? null . '%')
@@ -102,7 +104,7 @@ class InfoController extends Controller
                         ->orWhere('name', 'like', '%' . trim($area[2]) ?? null . '%');
                 }])->get()->whereNotNull('area')->first();
 
-                Cache::put(sprintf(self::zoneCache, $valid['area']), $zone, now()->addHours(12));
+                Cache::put($zoneCache, $zone, now()->addHours(12));
             }
         }
 

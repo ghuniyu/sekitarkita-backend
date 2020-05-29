@@ -152,8 +152,12 @@
 <div id="map"></div>
 <script src="{{ mix('js/app.js') }}"></script>
 <script>
+    const deviceId = '{{urldecode(request()->query('device_id'))}}';
+    let markerRealtime;
+    let map;
+
     function initMap() {
-        let map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), {
             zoom: 6,
             styles: [
                 {
@@ -380,7 +384,7 @@
             mapTypeId: 'terrain'
         });
 
-        fetch('/api/track/{{urldecode(request()->query('device_id'))}}')
+        fetch(`/api/track/${deviceId}`)
             .then((response) => {
                 document.getElementById("loading").style.display = "none";
                 return response.json();
@@ -390,6 +394,8 @@
                     Swal.fire({title: 'Error', text: 'data tidak tersedia', icon: 'error', heightAuto: false});
                     return
                 }
+
+                console.log(data);
 
                 data.forEach(function (dot) {
                     let icon = {
@@ -422,6 +428,8 @@
                 map.setCenter(data[0]);
                 smoothZoom(map, 15, map.getZoom());
                 trackPath.setMap(map);
+
+                initSocket();
             });
 
     }
@@ -438,6 +446,27 @@
                 map.setZoom(cnt)
             }, 80);
         }
+    }
+
+    function initSocket() {
+        const socket = sekitarSocket.connect();
+
+        socket.on(`tracking-location-${deviceId}`, function (data) {
+            let icon = {
+                url: "/images/markers/healthy-online.gif",
+                scaledSize: new google.maps.Size(50, 50),
+            };
+
+            if (markerRealtime === undefined) {
+                markerRealtime = new google.maps.Marker({
+                    position: new google.maps.LatLng(data.lat, data.lng),
+                    icon: icon,
+                    map: map
+                });
+            } else {
+                markerRealtime.setPosition(new google.maps.LatLng(data.lat, data.lng));
+            }
+        })
     }
 </script>
 <script async defer

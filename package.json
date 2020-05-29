@@ -21,6 +21,8 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "lodash": "^4.17.15",
+        "socket.io-client": "^2.3.0",
         "sweetalert2": "^9.10.12",
         "vis-network": "^7.4.0"
     }

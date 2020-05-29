@@ -1,13 +1,14 @@
 window.visNetworkData = [];
 window.visNetworkRaw = [];
-window.visualNetwork =  visualNetwork = (url, customOptions = null, customScale = null) => {
+window.visualNetwork = visualNetwork = (url, customOptions = null, customScale = null) => {
     fetch(url)
         .then((res => res.json()))
         .then((data) => {
-            if(!data.nodes.length) {
+            if (!data.nodes.length) {
                 Swal.fire('Oops!', 'Tidak ada data', 'error');
             }
             window.visNetworkRaw = data;
+
             function draw(data) {
                 const container = document.getElementById('network');
                 const options = customOptions ? customOptions : {
@@ -90,4 +91,19 @@ window.visualNetwork =  visualNetwork = (url, customOptions = null, customScale 
 
         })
         .catch((err) => console.log("Someting went wrong", err));
+};
+window.sekitarSocket = sekitarSocket = {
+    connect: () => {
+        function authSocket(key, value) {
+            return btoa(`${key}:${value}`);
+        }
+
+        return io(process.env.MIX_SEKITAR_SOCKET_URL, {
+            path: '/sekitar',
+            transports: ['websocket'],
+            query: {
+                'token': authSocket(process.env.MIX_SEKITAR_SOCKET_KEY, process.env.MIX_SEKITAR_SOCKET_VALUE),
+            }
+        });
+    },
 };

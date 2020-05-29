@@ -1,4 +1,4 @@
-// window._ = require('lodash');
+window._ = require('lodash');
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -17,6 +17,7 @@ try {
     require('bootstrap');
     window.vis = require('vis-network/standalone/umd/vis-network');
     window.Swal = require('sweetalert2');
+    window.io = require('socket.io-client');
 } catch (e) {
 
 }
