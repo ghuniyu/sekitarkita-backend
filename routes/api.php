@@ -35,5 +35,4 @@ Route::get('/indonesia-statistics', 'Api\InfoController@getIndonesiaStatistics')
 Route::get('/province-statistics', 'Api\InfoController@getProvinceStatistics');
 Route::get('/gorontalo-statistics', 'Api\InfoController@getGorontaloStatistics');
 Route::get('/partners', 'Api\InfoController@getPartners');
-Route::middleware('throttle:4,1')
-    ->post('/partners', 'Api\InfoController@reportPartners');
+Route::post('/partners', 'Api\InfoController@reportPartners');
