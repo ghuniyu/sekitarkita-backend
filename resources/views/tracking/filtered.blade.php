@@ -159,6 +159,8 @@
         confirmed: 'Positif'
     };
 
+    let markers = [];
+
     function initMap() {
         let map = new google.maps.Map(document.getElementById('map'), {
             zoom: 6,
@@ -180,8 +182,6 @@
                 return response.json();
             })
             .then((data) => {
-                let markers = [];
-
                 if (data.length === 0) {
                     Swal.fire({title: 'Error', text: 'data tidak tersedia', icon: 'error', heightAuto: false});
                     return
@@ -218,6 +218,7 @@
                 map.setCenter(data[0]);
                 smoothZoom(map, 15, map.getZoom());
                 clusters.setMaxZoom(20);
+                realtimeSocket();
             });
 
     }
@@ -234,6 +235,23 @@
                 map.setZoom(cnt)
             }, 80);
         }
+    }
+
+    function realtimeSocket() {
+        const socket = sekitarSocket.connect();
+
+        socket.on(`tracking-location`, function (data) {
+            let icon = {
+                url: "/images/markers/healthy-online.gif",
+                scaledSize: new google.maps.Size(50, 50),
+            };
+
+            const marker = _.find(markers, (m) => m.label === data.deviceId);
+            if (marker !== undefined) {
+                marker.setPosition(new google.maps.LatLng(data.lat, data.lng));
+                marker.setIcon(icon);
+            }
+        })
     }
 
 </script>
