@@ -32,6 +32,7 @@ class InfoController extends Controller
     const indonesiaCache = 'indonesia-statistics';
     const gorontaloCache = 'gorontalo-statistics';
     const provinceCache = 'province-statistics';
+    const zoneCache = 'zone-%s';
 
     public function getCallCenters()
     {
@@ -88,9 +89,20 @@ class InfoController extends Controller
         ]);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
-        $zone = Zone::with(['area' => function ($q) use ($valid) {
-            $q->where('name', 'like', '%' . $valid['area'] . '%');
-        }])->get()->whereNotNull('area')->first();
+        $zone = null;
+
+
+        if (isset($valid['area'])) {
+            if (Cache::has(sprintf(self::zoneCache, $valid['area']))) {
+                $zone = Cache::get(sprintf(self::zoneCache, $valid['area']));
+            } else {
+                $zone = Zone::with(['area' => function ($q) use ($valid) {
+                    $q->where('name', 'like', '%' . $valid['area'] . '%');
+                }])->get()->whereNotNull('area')->first();
+
+                Cache::put(sprintf(self::zoneCache, $valid['area']), $zone, now()->addHours(12));
+            }
+        }
 
         if ($valid['area'] != null) {
             Device::updateOrCreate([
