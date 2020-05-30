@@ -21,4 +21,11 @@ class Nearby extends Pivot
     {
         return $this->belongsTo(Device::class);
     }
+
+    public function scopeWithAppUser($query)
+    {
+        return $query->addSelect(['app_user' => Device::select('app_user')
+            ->whereColumn('another_device', 'devices.id')
+        ])->withCasts(['app_user' => 'boolean']);
+    }
 }

@@ -86,7 +86,11 @@ class DeviceController extends Controller
         $valid['device_id'] = Str::lower($valid['device_id']);
 
         $device = Device::find($valid['device_id']);
-        $device->load(['nearbies','scannedDevice']);
+        $device->load(['nearbies' => function ($query) {
+            return $query->withAppUser();
+        }, 'scannedDevice' => function ($query) {
+            return $query->withAppUser();
+        }]);
 
         return response()->json([
             'success' => true,
