@@ -36,6 +36,16 @@ class Device extends Model
         return $this->hasMany(Nearby::class);
     }
 
+    function scannedDevice()
+    {
+        return $this->hasMany(DeviceLog::class);
+    }
+
+    function scannedNearbyDevice()
+    {
+        return $this->nearbies->merge($this->scannedDevice)->unique(['another_device','device_id']);
+    }
+
     public function scopeHealthy($query)
     {
         return $query->where('user_status', HealthStatus::HEALTHY);

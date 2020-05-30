@@ -39,25 +39,16 @@ class DeviceController extends Controller
             'app_user' => true
         ]);
 
-        if (!$device->wasRecentlyCreated) {
-            $device['app_user'] = true;
-            $device->save();
-        }
-
         abort_if($device->banned, 403, "Device ID ini di Banned");
 
         DeviceLog::create($valid);
 
         $scanned_device = Device::firstOrCreate([
             'id' => $valid['nearby_device']
-        ], $valid);
-
-        if (!$scanned_device->wasRecentlyCreated) {
-            $scanned_device['device_name'] = $valid['device_name'] ?? null;
-            $scanned_device->save();
-        }
-
-        $device->touch();
+        ], [
+            'id' => $valid['nearby_device'],
+            'device_name' => $valid['device_name'] ?? null
+        ]);
 
         Nearby::updateOrCreate([
             'device_id' => $device['id'],
@@ -74,7 +65,13 @@ class DeviceController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Nearby Stored',
-            'nearby_device' => $scanned_device ?? null
+            'nearby_device' => [
+                'id' => $scanned_device['id'],
+                'name' => $scanned_device['name'] ?? null,
+                'user_status' => $scanned_device['user_status'] ?? 'healthy',
+                'created_at' => $scanned_device['created_at'],
+                'updated_at' => $scanned_device['updated_at']
+            ]
         ]);
     }
 
@@ -89,9 +86,11 @@ class DeviceController extends Controller
         $valid['device_id'] = Str::lower($valid['device_id']);
 
         $device = Device::find($valid['device_id']);
+        $device->load(['nearbies','scannedDevice']);
+
         return response()->json([
             'success' => true,
-            'nearbies' => $device->load('nearbies')['nearbies']
+            'nearbies' => $device->scannedNearbyDevice() ?? []
         ]);
     }
 
