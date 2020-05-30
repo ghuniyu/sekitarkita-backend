@@ -26,4 +26,11 @@ class DeviceLog extends Model
     {
         return $this->attributes['nearby_device'];
     }
+
+    public function scopeWithAppUser($query)
+    {
+        return $query->addSelect(['app_user' => Device::select('app_user')
+            ->whereColumn('nearby_device', 'devices.id')
+        ])->withCasts(['app_user' => 'boolean']);
+    }
 }
