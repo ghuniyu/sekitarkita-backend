@@ -10,6 +10,8 @@ class DeviceLog extends Model
         'device_id', 'nearby_device', 'latitude', 'longitude', 'speed', 'area', 'device_name'
     ];
 
+    protected $appends = ['another_device'];
+
     public function device()
     {
         return $this->belongsTo(Device::class);
@@ -18,5 +20,10 @@ class DeviceLog extends Model
     public function nearby()
     {
         return $this->belongsTo(Device::class, 'nearby_device', 'id');
+    }
+
+    public function getAnotherDeviceAttribute()
+    {
+        return $this->attributes['nearby_device'];
     }
 }
