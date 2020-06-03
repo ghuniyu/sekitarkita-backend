@@ -43,7 +43,9 @@ class Device extends Model
 
     function scannedNearbyDevice()
     {
-        return $this->nearbies->merge($this->scannedDevice)->unique(['another_device','device_id']);
+        return $this->nearbies->merge($this->scannedDevice)->unique(function ($item) {
+            return $item['another_device'] . $item['device_id'];
+        });
     }
 
     public function scopeHealthy($query)
