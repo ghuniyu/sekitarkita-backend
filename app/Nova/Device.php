@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -39,6 +40,10 @@ class Device extends Resource
                     return ucwords($resource);
                 })
                 ->onlyOnDetail(),
+            Number::make('Usia', 'age')
+                ->sortable(),
+            Text::make('Alamat', 'address')
+                ->sortable(),
             Text::make(__('NIK'),'nik')
                 ->onlyOnDetail(),
             Text::make(__('Nama Perangkat'), 'device_name'),

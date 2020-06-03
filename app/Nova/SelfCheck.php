@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -50,7 +51,11 @@ class SelfCheck extends Resource
                 ->searchable(),
             Text::make('Nama', 'name')
                 ->sortable(),
+            Number::make('Usia', 'age')
+                ->sortable(),
             Text::make('Nomor Telepon', 'phone')
+                ->sortable(),
+            Text::make('Alamat', 'address')
                 ->sortable(),
             Boolean::make('Demam dalam 14 hari?', 'has_fever'),
             Boolean::make('Flu?', 'has_flu'),
