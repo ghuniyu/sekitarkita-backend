@@ -32,24 +32,18 @@ class DeviceController extends Controller
         $valid['nearby_device'] = Str::lower($valid['nearby_device']);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
-        $device = Device::firstOrCreate([
+        $device = Device::updateOrCreate([
             'id' => Str::lower($valid['device_id'])
         ], [
             'id' => $valid['device_id'],
             'app_user' => true
         ]);
 
-        if(!$device->wasRecentlyCreated && $valid['app_user'] == 0) {
-            $device = $device->update([
-                'app_user' => true
-            ]);
-        }
-
         abort_if($device->banned, 403, "Device ID ini di Banned");
 
         DeviceLog::create($valid);
 
-        $scanned_device = Device::firstOrCreate([
+        $scanned_device = Device::updateOrCreate([
             'id' => $valid['nearby_device']
         ], [
             'id' => $valid['nearby_device'],
@@ -87,11 +81,11 @@ class DeviceController extends Controller
             'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id'
         ]);
 
-        abort_if(Device::find($valid['device_id'])->banned, 403, "Device ID ini di Banned");
-
         $valid['device_id'] = Str::lower($valid['device_id']);
-
         $device = Device::find($valid['device_id']);
+
+        abort_if($device->banned, 403, "Device ID ini di Banned");
+
         $device->load(['nearbies' => function ($query) {
             return $query->withAppUser();
         }, 'scannedDevice' => function ($query) {
@@ -182,19 +176,15 @@ class DeviceController extends Controller
             'firebase_token' => 'required|string|min:32|max:256'
         ]);
 
-        $device = Device::firstOrCreate(
+        $device = Device::updateOrCreate(
             ['id' => Str::lower($valid['device_id'])],
             [
                 'app_user' => true,
-                'id' => Str::lower($valid['device_id'])
+                'id' => Str::lower($valid['device_id']),
+                'firebase_token' => $valid['firebase_token'],
             ]
         );
         abort_if($device->banned, 403, "Device ID ini di Banned");
-
-        if (!$device->wasRecentlyCreated) {
-            $device['firebase_token'] = $valid['firebase_token'];
-            $device->save();
-        }
         return response()->json([
             'success' => true,
             'message' => 'Firebase Token Stored'
@@ -285,26 +275,24 @@ class DeviceController extends Controller
             'has_in_infected_city' => 'required|boolean',
             'has_direct_contact' => 'required|boolean',
             'name' => 'required|string',
+            'age' => 'required|string',
             'phone' => 'required|string',
+            'address' => 'required|string',
             'result' => ['required', 'string', new EnumValue(HealthStatus::class)]
         ]);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
-        $device = Device::firstOrCreate(
+        $device = Device::updateOrCreate(
             ['id' => $valid['device_id']],
             [
                 'app_user' => true,
                 'name' => $valid['name'],
                 'phone' => $valid['phone'],
+                'age' => $valid['age'],
+                'address' => $valid['address'],
             ]
         );
-        abort_if(Device::find($valid['device_id'])->banned, 403, "Device ID ini di Banned");
-
-        if (!$device->wasRecentlyCreated) {
-            $device['name'] = $valid['name'];
-            $device['phone'] = $valid['phone'];
-            $device->save();
-        }
+        abort_if($device->banned, 403, "Device ID ini di Banned");
 
         SelfCheck::create($valid);
         return response()->json([
