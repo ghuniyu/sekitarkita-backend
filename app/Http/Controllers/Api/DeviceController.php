@@ -39,6 +39,12 @@ class DeviceController extends Controller
             'app_user' => true
         ]);
 
+        if(!$device->wasRecentlyCreated && $valid['app_user'] == 0) {
+            $device = $device->update([
+                'app_user' => true
+            ]);
+        }
+
         abort_if($device->banned, 403, "Device ID ini di Banned");
 
         DeviceLog::create($valid);
