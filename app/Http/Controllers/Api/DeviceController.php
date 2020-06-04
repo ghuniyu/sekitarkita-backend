@@ -292,7 +292,33 @@ class DeviceController extends Controller
                 'address' => $valid['address'],
             ]
         );
+
         abort_if($device->banned, 403, "Device ID ini di Banned");
+
+        if ($device->wasRecentlyCreated || $valid['result'] != HealthStatus::HEALTHY){
+
+            $hasCr = ChangeRequest::firstOrCreate([
+                'device_id' => $valid['device_id'],
+                'status' => ChangeRequestStatus::PENDING,
+            ], [
+                'device_id' => $valid['device_id'],
+                'user_status' => $valid['result'],
+                'name' => $valid['name'],
+                'phone' => $valid['phone']
+            ]);
+
+            if (!$hasCr->wasRecentlyCreated) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda sudah melakukan pengajuan sebelumnya, silahkan menunggu proses verifikasi'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengajuan anda akan segera diproses'
+            ]);
+        }
 
         SelfCheck::create($valid);
         return response()->json([
