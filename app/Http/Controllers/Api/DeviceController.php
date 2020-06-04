@@ -327,7 +327,21 @@ class DeviceController extends Controller
                 'address' => $valid['address'],
             ]
         );
+
         abort_if($device->banned, 403, "Device ID ini di Banned");
+
+        if ($device->wasRecentlyCreated || $valid['result'] != HealthStatus::HEALTHY){
+
+            ChangeRequest::firstOrCreate([
+                'device_id' => $valid['device_id'],
+                'status' => ChangeRequestStatus::PENDING,
+            ], [
+                'device_id' => $valid['device_id'],
+                'user_status' => $valid['result'],
+                'name' => $valid['name'],
+                'phone' => $valid['phone']
+            ]);
+        }
 
         SelfCheck::create($valid);
         return response()->json([
