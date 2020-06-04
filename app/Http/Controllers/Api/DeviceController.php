@@ -332,7 +332,7 @@ class DeviceController extends Controller
 
         if ($device->wasRecentlyCreated || $valid['result'] != HealthStatus::HEALTHY){
 
-            $hasCr = ChangeRequest::firstOrCreate([
+            ChangeRequest::firstOrCreate([
                 'device_id' => $valid['device_id'],
                 'status' => ChangeRequestStatus::PENDING,
             ], [
@@ -340,18 +340,6 @@ class DeviceController extends Controller
                 'user_status' => $valid['result'],
                 'name' => $valid['name'],
                 'phone' => $valid['phone']
-            ]);
-
-            if (!$hasCr->wasRecentlyCreated) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Anda sudah melakukan pengajuan sebelumnya, silahkan menunggu proses verifikasi'
-                ]);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Pengajuan anda akan segera diproses'
             ]);
         }
 
