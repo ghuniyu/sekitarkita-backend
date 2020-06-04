@@ -275,6 +275,41 @@ class DeviceController extends Controller
             'has_in_infected_city' => 'required|boolean',
             'has_direct_contact' => 'required|boolean',
             'name' => 'required|string',
+            'phone' => 'required|string',
+            'result' => ['required', 'string', new EnumValue(HealthStatus::class)]
+        ]);
+        $valid['device_id'] = Str::lower($valid['device_id']);
+
+        $device = Device::updateOrCreate(
+            ['id' => $valid['device_id']],
+            [
+                'app_user' => true,
+                'name' => $valid['name'],
+                'phone' => $valid['phone'],
+            ]
+        );
+        abort_if($device->banned, 403, "Device ID ini di Banned");
+
+        SelfCheck::create($valid);
+        return response()->json([
+            'success' => true,
+            'message' => 'Self Check Stored'
+        ]);
+    }
+
+    public function storeSelfCheckV2(Request $request)
+    {
+        $valid = $this->validate($request, [
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/',
+            'has_fever' => 'required|boolean',
+            'has_flu' => 'required|boolean',
+            'has_cough' => 'required|boolean',
+            'has_breath_problem' => 'required|boolean',
+            'has_sore_throat' => 'required|boolean',
+            'has_in_infected_country' => 'required|boolean',
+            'has_in_infected_city' => 'required|boolean',
+            'has_direct_contact' => 'required|boolean',
+            'name' => 'required|string',
             'age' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',

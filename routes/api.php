@@ -19,6 +19,7 @@ Route::post('store-device', 'Api\DeviceController@store');
 Route::post('me', 'Api\DeviceController@getMe');
 Route::post('store-firebase-token', 'Api\DeviceController@storeFirebaseToken');
 Route::post('store-selfcheck', 'Api\DeviceController@storeSelfCheck');
+Route::post('v2/store-selfcheck', 'Api\DeviceController@storeSelfCheck');
 Route::post('device-history', 'Api\DeviceController@getNearby');
 Route::post('change-status', 'Api\DeviceController@changeRequest');
 
