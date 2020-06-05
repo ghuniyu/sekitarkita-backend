@@ -26,6 +26,8 @@ class Nearby extends Pivot
     {
         return $query->addSelect(['app_user' => Device::select('app_user')
             ->whereColumn('another_device', 'devices.id')
-        ])->withCasts(['app_user' => 'boolean']);
+        ])->withCasts(['app_user' => 'boolean'])->addSelect(['user_status' => Device::select('user_status')
+            ->whereColumn('another_device', 'devices.id')
+        ]);
     }
 }

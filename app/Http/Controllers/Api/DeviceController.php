@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Enums\ChangeRequestStatus;
 use App\Enums\HealthStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\NearbyCollection;
+use App\Http\Resources\NearbyResource;
 use App\Models\ChangeRequest;
 use App\Models\Device;
 use App\Models\DeviceLog;
@@ -86,15 +88,13 @@ class DeviceController extends Controller
 
         abort_if($device->banned, 403, "Device ID ini di Banned");
 
-        $device->load(['nearbies' => function ($query) {
-            return $query->withAppUser();
-        }, 'scannedDevice' => function ($query) {
-            return $query->withAppUser();
-        }]);
+        $nearbies = Nearby::where('device_id', $device['id'])
+            ->orWhere('another_device', $device['id'])
+            ->withAppUser()
+            ->paginate(25);
 
-        return response()->json([
-            'success' => true,
-            'nearbies' => $device->scannedNearbyDevice() ?? []
+        return NearbyCollection::make($nearbies)->additional([
+            'success' => true
         ]);
     }
 

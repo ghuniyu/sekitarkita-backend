@@ -38,7 +38,7 @@ class Device extends Model
 
     function scannedDevice()
     {
-        return $this->hasMany(DeviceLog::class);
+        return $this->hasMany(Nearby::class, 'another_device');
     }
 
     function scannedNearbyDevice()
