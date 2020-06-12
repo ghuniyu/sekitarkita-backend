@@ -3,7 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
+/**
+ * @property Collection kelurahans
+ */
 class Kecamatan extends Model
 {
     protected $table = 'indonesia_districts';

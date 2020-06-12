@@ -36,3 +36,10 @@ Route::get('/province-statistics', 'Api\InfoController@getProvinceStatistics');
 Route::get('/gorontalo-statistics', 'Api\InfoController@getGorontaloStatistics');
 Route::get('/partners', 'Api\InfoController@getPartners');
 Route::post('/partners', 'Api\InfoController@reportPartners');
+
+Route::get('/area/provinces', 'Api\AreaController@getProvinces');
+Route::get('/area/{province}/cities', 'Api\AreaController@getCities');
+Route::get('/area/{city}/districts', 'Api\AreaController@getDistricts');
+Route::get('/area/{district}/villages', 'Api\AreaController@getVillages');
+Route::get('/area/gorontalo', 'Api\AreaController@getGorontalo');
+Route::get('/area/origin-cities', 'Api\AreaController@getOriginCities');
