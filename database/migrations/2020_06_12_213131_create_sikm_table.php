@@ -17,6 +17,8 @@ class CreateSikmTable extends Migration
     {
         Schema::create('sikm', function (Blueprint $table) {
             $table->string('id')->primary();
+            $table->string('device_id');
+            $table->foreign('device_id')->references('id')->on('devices');
             $table->string('nik');
             $table->string('name');
             $table->string('phone');
@@ -27,7 +29,7 @@ class CreateSikmTable extends Migration
             $table->string('medical_file');
             $table->date('medical_issued');
             $table->integer('person')->default(1);
-            $table->enum('status', ChangeRequestStatus::getValues());
+            $table->enum('status', ChangeRequestStatus::getValues())->default(ChangeRequestStatus::PENDING);
             $table->timestamps();
         });
     }

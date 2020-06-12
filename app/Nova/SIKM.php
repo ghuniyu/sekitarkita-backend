@@ -5,6 +5,7 @@ namespace App\Nova;
 use App\Enums\ChangeRequestStatus;
 use App\Enums\SIKMCategory;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\File;
 use Laravel\Nova\Fields\ID;
@@ -63,12 +64,15 @@ class SIKM extends Resource
                 ->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->readonly(),
+            BelongsTo::make('Perangkat', 'device', Device::class),
             Text::make('NIK')
+                ->hideFromIndex()
                 ->rules('digits:16')
                 ->sortable(),
             Text::make('Nama', 'name')
                 ->sortable(),
             Text::make('Telepon', 'phone')
+                ->hideFromIndex()
                 ->sortable(),
             MorphTo::make(__('Asal'), 'originable')
                 ->types([Kecamatan::class, Kabupaten::class, Provinsi::class])
@@ -85,6 +89,7 @@ class SIKM extends Resource
             Image::make('Surat SWAB / Rapid', 'medical_file')
                 ->required(),
             Date::make('Tanggal Terbit Surat', 'medical_issued')
+                ->hideFromIndex()
                 ->required(),
             Select::make('Status Pengajuan', 'status')
                 ->displayUsingLabels()
