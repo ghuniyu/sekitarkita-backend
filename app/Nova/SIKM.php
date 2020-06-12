@@ -4,6 +4,9 @@ namespace App\Nova;
 
 use App\Enums\ChangeRequestStatus;
 use App\Enums\SIKMCategory;
+use App\Nova\Actions\ApproveSIKM;
+use App\Nova\Actions\PendingSIKM;
+use App\Nova\Actions\RejectSIKM;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Date;
@@ -12,6 +15,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Status;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -91,10 +95,12 @@ class SIKM extends Resource
             Date::make('Tanggal Terbit Surat', 'medical_issued')
                 ->hideFromIndex()
                 ->required(),
-            Select::make('Status Pengajuan', 'status')
-                ->displayUsingLabels()
-                ->sortable()
-                ->options(ChangeRequestStatus::toSelectArray())
+            Status::make('Status Pengajuan', 'status')
+                ->displayUsing(function ($item){
+                    return ChangeRequestStatus::getDescription($item);
+                })
+                ->loadingWhen([ChangeRequestStatus::getDescription(ChangeRequestStatus::PENDING)])
+                ->failedWhen([ChangeRequestStatus::getDescription(ChangeRequestStatus::REJECT)])
                 ->required(),
         ];
     }
@@ -140,6 +146,10 @@ class SIKM extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            ApproveSIKM::make(),
+            RejectSIKM::make(),
+            PendingSIKM::make()
+        ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ChangeRequestStatus;
 use App\Traits\UuidIndex;
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,5 +30,23 @@ class SIKM extends Model
     public function device()
     {
         return $this->belongsTo(Device::class);
+    }
+
+    public function approve()
+    {
+        $this['status'] = ChangeRequestStatus::APPROVE;
+        $this->save();
+    }
+
+    public function pending()
+    {
+        $this['status'] = ChangeRequestStatus::PENDING;
+        $this->save();
+    }
+
+    public function reject()
+    {
+        $this['status'] = ChangeRequestStatus::REJECT;
+        $this->save();
     }
 }

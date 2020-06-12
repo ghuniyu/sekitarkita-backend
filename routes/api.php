@@ -36,6 +36,7 @@ Route::get('/province-statistics', 'Api\InfoController@getProvinceStatistics');
 Route::get('/gorontalo-statistics', 'Api\InfoController@getGorontaloStatistics');
 Route::get('/partners', 'Api\InfoController@getPartners');
 Route::post('/partners', 'Api\InfoController@reportPartners');
+Route::post('/partners/sikm', 'Api\InfoController@sikm');
 
 Route::get('/area/provinces', 'Api\AreaController@getProvinces');
 Route::get('/area/{province}/cities', 'Api\AreaController@getCities');
