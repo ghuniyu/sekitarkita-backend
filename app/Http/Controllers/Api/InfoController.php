@@ -238,9 +238,11 @@ class InfoController extends Controller
         $valid['status'] = ChangeRequestStatus::APPROVE;
 
 
-        if (SIKM::create($valid))
+        $sikm = SIKM::create($valid);
+        if ($sikm)
             return response()->json([
                 'success' => true,
+                'data' => $sikm,
                 'message' => 'Berhasil Mengajukan SIKM',
             ]);
         else
