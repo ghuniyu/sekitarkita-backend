@@ -16,7 +16,7 @@ class CreateSikmTable extends Migration
     public function up()
     {
         Schema::create('sikm', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->id();
             $table->string('device_id');
             $table->foreign('device_id')->references('id')->on('devices');
             $table->string('nik');
