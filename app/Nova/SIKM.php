@@ -68,7 +68,8 @@ class SIKM extends Resource
                 ->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->readonly(),
-            BelongsTo::make('Perangkat', 'device', Device::class),
+            BelongsTo::make('Perangkat', 'device', Device::class)
+                ->searchable(),
             Text::make('NIK')
                 ->hideFromIndex()
                 ->rules('digits:16')
