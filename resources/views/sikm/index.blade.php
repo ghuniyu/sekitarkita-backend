@@ -6,6 +6,8 @@
 </head>
 <body>
 <div class="container">
+    <br>
+    <br>
     <div class="row">
         <div class="col"><img src="{{asset('/images/sikm/kop-sikm.png')}}" class="w-100" alt="kop"><br><br>
             <div class="text-center"><h3><strong>SURAT IJIN MASUK</strong></h3><h5>No. 360/BPBD/{{$sikm['id']}}
