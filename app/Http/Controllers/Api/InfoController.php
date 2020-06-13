@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ChangeRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CallCenterResource;
 use App\Http\Resources\HospitalResource;
@@ -231,11 +232,11 @@ class InfoController extends Controller
         $medical = $request->file('medical_file');
         $medical_file = $medical->getClientOriginalName();
 
-        $ktp->storeAs('file-sikm', $ktp_file, ['disk' => 'public']);
-        $medical->storeAs('file-sikm', $medical_file, ['disk' => 'public']);
 
-        $valid['ktp_file'] = 'file-sikm/' . $ktp_file;
-        $valid['medical_file'] = 'file-sikm/' . $medical_file;
+        $valid['ktp_file'] = $ktp->storeAs('file-sikm', $ktp_file, ['disk' => 'public']);
+        $valid['medical_file'] = $medical->storeAs('file-sikm', $medical_file, ['disk' => 'public']);
+        $valid['status'] = ChangeRequestStatus::APPROVE;
+
 
         if (SIKM::create($valid))
             return response()->json([
