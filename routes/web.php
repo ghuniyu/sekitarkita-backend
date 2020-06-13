@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\SIKM;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,3 +41,13 @@ Route::get('api/device-interaction', 'Api\MappingController@recordedInteraction'
 Route::get('api/filteredTrack/', 'Api\DeviceController@filteredTracking')
     ->middleware(config('nova.middleware', []));
 
+Route::get('sikm/{info}', function ($info) {
+    $sikm = SIKM::with('originable', 'destinationable')
+        ->where('device_id', $info)
+        ->orWhere('nik', $info)
+        ->orWhere('id', $info)
+        ->orderByDesc('created_at')
+        ->firstOrFail();
+
+    return view('sikm.index', compact('sikm'));
+});
