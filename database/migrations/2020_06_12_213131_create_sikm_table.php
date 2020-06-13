@@ -28,7 +28,6 @@ class CreateSikmTable extends Migration
             $table->string('ktp_file');
             $table->string('medical_file');
             $table->date('medical_issued');
-            $table->integer('person')->default(1);
             $table->enum('status', ChangeRequestStatus::getValues())->default(ChangeRequestStatus::PENDING);
             $table->timestamps();
         });
