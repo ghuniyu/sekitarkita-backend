@@ -79,24 +79,28 @@ class SIKM extends Resource
                 ->hideFromIndex()
                 ->sortable(),
             MorphTo::make(__('Asal'), 'originable')
-                ->types([Kecamatan::class, Kabupaten::class, Provinsi::class])
+                ->types([Kabupaten::class])
                 ->searchable(),
             MorphTo::make(__('Tujuan'), 'destinationable')
-                ->types([Kecamatan::class, Kabupaten::class, Provinsi::class])
+                ->types([Kelurahan::class])
                 ->searchable(),
             Select::make('Kategori SIKM', 'category')
                 ->displayUsingLabels()
                 ->options(SIKMCategory::toSelectArray())
                 ->required(),
             Image::make('File KTP', 'ktp_file')
+                ->path('file_sikm')
+                ->disk('public')
                 ->required(),
             Image::make('Surat SWAB / Rapid', 'medical_file')
+                ->path('file_sikm')
+                ->disk('public')
                 ->required(),
             Date::make('Tanggal Terbit Surat', 'medical_issued')
                 ->hideFromIndex()
                 ->required(),
             Status::make('Status Pengajuan', 'status')
-                ->displayUsing(function ($item){
+                ->displayUsing(function ($item) {
                     return ChangeRequestStatus::getDescription($item);
                 })
                 ->loadingWhen([ChangeRequestStatus::getDescription(ChangeRequestStatus::PENDING)])

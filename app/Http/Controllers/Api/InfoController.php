@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ChangeRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CallCenterResource;
 use App\Http\Resources\HospitalResource;
@@ -12,6 +13,7 @@ use App\Models\Kecamatan;
 use App\Models\Kelurahan;
 use App\Models\Partner;
 use App\Models\Provinsi;
+use App\Models\SIKM;
 use App\Models\Zone;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -205,5 +207,46 @@ class InfoController extends Controller
     function zoneify(string $s)
     {
         return explode(',', str_ireplace('kelurahan', '', str_ireplace('kecamatan', '', str_ireplace('kabupaten', '', str_ireplace('kota', '', str_ireplace('desa', '', $s))))));
+    }
+
+    function sikm(Request $request)
+    {
+        $valid = $this->validate($request, [
+            'device_id' => 'required|string|regex:/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/|exists:devices,id',
+            'phone' => 'required|phone:ID',
+            'nik' => 'required|numeric|digits:16',
+            'name' => 'required|string',
+            'originable_id' => 'required|string|exists:indonesia_cities,id',
+            'destinationable_id' => 'required|string|exists:indonesia_villages,id',
+            'category' => 'required|string',
+            'ktp_file' => 'required|image',
+            'medical_file' => 'required|image',
+            'medical_issued' => 'before_or_equal:today'
+        ]);
+
+        $valid['originable_type'] = Kabupaten::class;
+        $valid['destinationable_type'] = Kelurahan::class;
+
+        $ktp = $request->file('ktp_file');
+        $ktp_file = $ktp->getClientOriginalName();
+        $medical = $request->file('medical_file');
+        $medical_file = $medical->getClientOriginalName();
+
+
+        $valid['ktp_file'] = $ktp->storeAs('file-sikm', $ktp_file, ['disk' => 'public']);
+        $valid['medical_file'] = $medical->storeAs('file-sikm', $medical_file, ['disk' => 'public']);
+        $valid['status'] = ChangeRequestStatus::APPROVE;
+
+
+        if (SIKM::create($valid))
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil Mengajukan SIKM',
+            ]);
+        else
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal Mengajukan SIKM',
+            ]);
     }
 }
