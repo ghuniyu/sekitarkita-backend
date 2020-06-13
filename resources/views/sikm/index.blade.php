@@ -3,6 +3,24 @@
 
     <title>SIKM</title>
     <link rel="stylesheet" href="{{asset('/css/bootstrap4.css')}}">
+
+    <style>
+        body {
+            font-size: 2rem;
+        }
+
+        h3 {
+            font-size: 3rem;
+        }
+
+        h5 {
+            font-size: 2rem;
+        }
+
+        table {
+            font-size: 2rem;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -12,6 +30,7 @@
         <div class="col"><img src="{{asset('/images/sikm/kop-sikm.png')}}" class="w-100" alt="kop"><br><br>
             <div class="text-center"><h3><strong>SURAT IJIN MASUK</strong></h3><h5>No. 360/BPBD/{{$sikm['id']}}
                     /VI/2020</h5></div>
+            <br>
             <p><strong>Diberikan Kepada :</strong></p>
             <table class="w-100">
                 <tr>
@@ -50,15 +69,16 @@
                     <td>s.d {{$sikm['medical_issued']->addDays(3)->format('d M Y')}}</td>
                 </tr>
             </table>
+            <br>
             <p><strong>Berdasarkan :</strong></p>
             <p>Hasil Pemeriksaaan Covid-19 <u>Non reaktif / Negative</u>, apabila keterangan yang diberikan <strong>PALSU</strong>,
                 maka yang bersangkutan dikenakan <strong>SANKSI</strong> sesuai ketentuan perundang-undangan.</p></div>
     </div>
+    <br><br>
     <div class="justify-content-end row">
-        <div class="text-center col-sm-3"><p>Gorontalo , {{$sikm->created_at->format('d M Y')}}</p><img class="w-100"
-                                                                                                        src="{{asset('/images/sikm/ttd.png')}}"
-                                                                                                        alt="ttd"
-                                                                                                        style="margin-left: -55px;">
+        <div><p>Gorontalo , {{$sikm->created_at->format('d M Y')}}</p>
+            <img class="w-100" src="{{asset('/images/sikm/ttd.png')}}" alt="ttd"
+                 style="width: 400px!important; height: 300px">
         </div>
     </div>
 </div>
