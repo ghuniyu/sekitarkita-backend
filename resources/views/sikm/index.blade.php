@@ -28,8 +28,9 @@
     <br>
     <div class="row">
         <div class="col"><img src="{{asset('/images/sikm/kop-sikm.png')}}" class="w-100" alt="kop"><br><br>
-            <div class="text-center"><h3><strong>SURAT IJIN MASUK</strong></h3><h5>No. 360/BPBD/{{$sikm['id']}}
-                    /VI/2020</h5></div>
+            <div class="text-center">
+                <h3><u><strong>SURAT IJIN MASUK</strong></u></h3>
+                <h5>No. 360/BPBD/{{$sikm['id']}}/VI/2020</h5></div>
             <br>
             <p><strong>Diberikan Kepada :</strong></p>
             <table class="w-100">
@@ -72,7 +73,7 @@
             <br>
             <p><strong>Berdasarkan :</strong></p>
             <p>Hasil Pemeriksaaan Covid-19 <u>Non reaktif / Negative</u>, apabila keterangan yang diberikan <strong>PALSU</strong>,
-                maka yang bersangkutan dikenakan <strong>SANKSI</strong> sesuai ketentuan perundang-undangan.</p></div>
+                maka yang bersangkutan bertanggung jawab wdikenakan <strong>SANKSI</strong> sesuai ketentuan perundang-undangan.</p></div>
     </div>
     <br><br>
     <div class="justify-content-end row">
