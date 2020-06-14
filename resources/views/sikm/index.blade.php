@@ -73,7 +73,7 @@
             <br>
             <p><strong>Berdasarkan :</strong></p>
             <p>Hasil Pemeriksaaan Covid-19 <u>Non reaktif / Negative</u>, apabila keterangan yang diberikan <strong>PALSU</strong>,
-                maka yang bersangkutan bertanggung jawab wdikenakan <strong>SANKSI</strong> sesuai ketentuan perundang-undangan.</p></div>
+                maka yang bersangkutan bertanggung jawab dikenakan <strong>SANKSI</strong> sesuai ketentuan perundang-undangan.</p></div>
     </div>
     <br><br>
     <div class="justify-content-end row">
