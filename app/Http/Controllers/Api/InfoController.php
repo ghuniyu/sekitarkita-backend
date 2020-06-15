@@ -12,19 +12,16 @@ use App\Models\Kabupaten;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
 use App\Models\Partner;
-use App\Models\Provinsi;
 use App\Models\SIKM;
 use App\Models\Zone;
+use Carbon\Carbon;
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use App\Models\CallCenter;
 use App\Models\Hospital;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -223,6 +220,10 @@ class InfoController extends Controller
             'medical_file' => 'required|image',
             'medical_issued' => 'before_or_equal:today'
         ]);
+
+        if(!$request->hasHeader('AppVersion')) {
+            $valid['medical_issued'] = Carbon::parse($valid['medical_issued'])->addMonths(1);
+        }
 
         $valid['originable_type'] = Kabupaten::class;
         $valid['destinationable_type'] = Kelurahan::class;
