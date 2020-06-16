@@ -18,14 +18,14 @@ jobs:
           key: ${{ secrets.KEY }}
           port: 22
           script: cd ~ && sh sekitarDeployer.sh
-#      - name: Deploy to Production-2 Server
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.HOST_PROD2 }}
-#          username: ${{ secrets.USER }}
-#          key: ${{ secrets.KEY_PROD2 }}
-#          port: 22
-#          script: cd ~ && sh sekitarDeployer.sh
+      - name: Deploy to Production-2 Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_PROD2 }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY_PROD2 }}
+          port: 22
+          script: cd ~ && sh sekitarDeployer.sh
 #      - name: Deploy to Replicate Server
 #        uses: appleboy/ssh-action@master
 #        with:
