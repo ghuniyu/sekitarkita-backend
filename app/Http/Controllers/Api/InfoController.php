@@ -88,39 +88,47 @@ class InfoController extends Controller
         ]);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
-        $zone = null;
+
         $area = $this->zoneify($valid['area']);
 
-        if (isset($valid['area'])) {
-            $zoneCache = sprintf(self::zoneCache, Str::slug($valid['area']));
+        $key = $valid['device_id'] . '_' . Str::slug($valid['area']);
 
-            if (Cache::has($zoneCache)) {
-                $zone = Cache::get($zoneCache);
-            } else {
-                $zone = Zone::with(['area' => function ($q) use ($area) {
-                    $q->where('name', 'like', '%' . trim($area[0]) ?? null . '%')
-                        ->orWhere('name', 'like', '%' . trim($area[1]) ?? null . '%')
-                        ->orWhere('name', 'like', '%' . trim($area[2]) ?? null . '%');
-                }])->get()->whereNotNull('area')->first();
+        $zone = cache()->remember($key, now()->addMinutes(15), function () use ($valid, $area) {
+            $zone = null;
 
-                Cache::put($zoneCache, $zone, now()->addHours(12));
+            if (isset($valid['area'])) {
+                $zoneCache = sprintf(self::zoneCache, Str::slug($valid['area']));
+
+                if (Cache::has($zoneCache)) {
+                    $zone = Cache::get($zoneCache);
+                } else {
+                    $zone = Zone::with(['area' => function ($q) use ($area) {
+                        $q->where('name', 'like', '%' . trim($area[0]) ?? null . '%')
+                            ->orWhere('name', 'like', '%' . trim($area[1]) ?? null . '%')
+                            ->orWhere('name', 'like', '%' . trim($area[2]) ?? null . '%');
+                    }])->get()->whereNotNull('area')->first();
+
+                    Cache::put($zoneCache, $zone, now()->addHours(12));
+                }
             }
-        }
 
-        if ($valid['area'] != null) {
-            Device::updateOrCreate([
-                'id' => $valid['device_id'],
-            ], [
-                'id' => $valid['device_id'] ?? null,
-                'app_user' => true,
-                'last_known_area' => $valid['area'] ?? null,
-                'last_known_latitude' => $valid['latitude'] ?? null,
-                'last_known_longitude' => $valid['longitude'] ?? null,
-                'last_known_address' => $valid['address'] ?? null
-            ]);
-        }
+            if ($valid['area'] != null) {
+                Device::updateOrCreate([
+                    'id' => $valid['device_id'],
+                ], [
+                    'id' => $valid['device_id'] ?? null,
+                    'app_user' => true,
+                    'last_known_area' => $valid['area'] ?? null,
+                    'last_known_latitude' => $valid['latitude'] ?? null,
+                    'last_known_longitude' => $valid['longitude'] ?? null,
+                    'last_known_address' => $valid['address'] ?? null
+                ]);
+            }
 
-        DeviceLog::create($valid);
+            DeviceLog::create($valid);
+
+            return $zone;
+        });
 
         return response()->json([
             'success' => true,

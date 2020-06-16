@@ -6,7 +6,6 @@ use App\Enums\ChangeRequestStatus;
 use App\Enums\HealthStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NearbyCollection;
-use App\Http\Resources\NearbyResource;
 use App\Models\ChangeRequest;
 use App\Models\Device;
 use App\Models\DeviceLog;
@@ -15,7 +14,6 @@ use App\Models\SelfCheck;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class DeviceController extends Controller
@@ -34,35 +32,41 @@ class DeviceController extends Controller
         $valid['nearby_device'] = Str::lower($valid['nearby_device']);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
-        $device = Device::updateOrCreate([
-            'id' => Str::lower($valid['device_id'])
-        ], [
-            'id' => $valid['device_id'],
-            'app_user' => true
-        ]);
+        $key = $valid['device_id'] . '_' . $valid['nearby_device'];
 
-        abort_if($device->banned, 403, "Device ID ini di Banned");
+        $scanned_device = cache()->remember($key, now()->addMinutes(10), function () {
+            $device = Device::updateOrCreate([
+                'id' => Str::lower($valid['device_id'])
+            ], [
+                'id' => $valid['device_id'],
+                'app_user' => true
+            ]);
 
-        DeviceLog::create($valid);
+            abort_if($device->banned, 403, "Device ID ini di Banned");
 
-        $scanned_device = Device::updateOrCreate([
-            'id' => $valid['nearby_device']
-        ], [
-            'id' => $valid['nearby_device'],
-            'device_name' => $valid['device_name'] ?? null
-        ]);
+            DeviceLog::create($valid);
 
-        Nearby::updateOrCreate([
-            'device_id' => $device['id'],
-            'another_device' => $valid['nearby_device'],
-        ], [
-            'device_id' => $device['id'],
-            'another_device' => $valid['nearby_device'],
-            'device_name' => $valid['device_name'] ?? null,
-            'latitude' => $valid['latitude'] ?? null,
-            'longitude' => $valid['longitude'] ?? null,
-            'speed' => $valid['speed'] ?? null,
-        ]);
+            $scanned_device = Device::updateOrCreate([
+                'id' => $valid['nearby_device']
+            ], [
+                'id' => $valid['nearby_device'],
+                'device_name' => $valid['device_name'] ?? null
+            ]);
+
+            Nearby::updateOrCreate([
+                'device_id' => $device['id'],
+                'another_device' => $valid['nearby_device'],
+            ], [
+                'device_id' => $device['id'],
+                'another_device' => $valid['nearby_device'],
+                'device_name' => $valid['device_name'] ?? null,
+                'latitude' => $valid['latitude'] ?? null,
+                'longitude' => $valid['longitude'] ?? null,
+                'speed' => $valid['speed'] ?? null,
+            ]);
+
+            return $scanned_device;
+        });
 
         return response()->json([
             'success' => true,
@@ -330,7 +334,7 @@ class DeviceController extends Controller
 
         abort_if($device->banned, 403, "Device ID ini di Banned");
 
-        if ($device->wasRecentlyCreated || $valid['result'] != HealthStatus::HEALTHY){
+        if ($device->wasRecentlyCreated || $valid['result'] != HealthStatus::HEALTHY) {
 
             ChangeRequest::firstOrCreate([
                 'device_id' => $valid['device_id'],
