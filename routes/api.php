@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('store-device', 'Api\DeviceController@store');
+Route::post('store-device', 'Api\DeviceController@store')
+    ->middleware('throttle:4,1');
 
 Route::post('me', 'Api\DeviceController@getMe');
 Route::post('store-firebase-token', 'Api\DeviceController@storeFirebaseToken');
@@ -35,7 +36,7 @@ Route::get('/indonesia-statistics', 'Api\InfoController@getIndonesiaStatistics')
 Route::get('/province-statistics', 'Api\InfoController@getProvinceStatistics');
 Route::get('/gorontalo-statistics', 'Api\InfoController@getGorontaloStatistics');
 Route::get('/partners', 'Api\InfoController@getPartners');
-Route::post('/partners', 'Api\InfoController@reportPartners');
+Route::post('/partners', 'Api\InfoController@reportPartners')->middleware('throttle:4,1');;
 Route::post('/partners/sikm', 'Api\InfoController@sikm');
 
 Route::get('/area/provinces', 'Api\AreaController@getProvinces');
