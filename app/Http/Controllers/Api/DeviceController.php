@@ -32,9 +32,9 @@ class DeviceController extends Controller
         $valid['nearby_device'] = Str::lower($valid['nearby_device']);
         $valid['device_id'] = Str::lower($valid['device_id']);
 
-        $key = $valid['device_id'] . '_' . $valid['nearby_device'];
+        $key = Str::slug($valid['device_id']) . '_' . Str::slug($valid['nearby_device']);
 
-        $scanned_device = cache()->remember($key, now()->addMinutes(10), function () {
+        $scanned_device = cache()->remember($key, now()->addMinutes(10), function () use ($valid){
             $device = Device::updateOrCreate([
                 'id' => Str::lower($valid['device_id'])
             ], [
