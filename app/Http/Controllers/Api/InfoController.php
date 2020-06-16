@@ -91,7 +91,7 @@ class InfoController extends Controller
 
         $area = $this->zoneify($valid['area']);
 
-        $key = Str::slug($valid['device_id']) . '-' . Str::slug($valid['area']);
+        $key = 'report-' . Str::slug($valid['device_id']);
 
         $zone = cache()->remember($key, now()->addMinutes(15), function () use ($valid, $area) {
             $zone = null;
