@@ -52,7 +52,7 @@ class SIKM extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'device', 'name', 'nik', 'phone'
+        'id', 'device_id', 'name', 'nik', 'phone'
     ];
 
     /**
@@ -71,13 +71,11 @@ class SIKM extends Resource
             BelongsTo::make('Perangkat', 'device', Device::class)
                 ->searchable(),
             Text::make('NIK')
-                ->hideFromIndex()
                 ->rules('digits:16')
                 ->sortable(),
             Text::make('Nama', 'name')
                 ->sortable(),
             Text::make('Telepon', 'phone')
-                ->hideFromIndex()
                 ->sortable(),
             MorphTo::make(__('Asal'), 'originable')
                 ->types([Kabupaten::class])
@@ -98,7 +96,6 @@ class SIKM extends Resource
                 ->disk('public')
                 ->required(),
             Date::make('Tanggal Terbit Surat', 'medical_issued')
-                ->hideFromIndex()
                 ->required(),
             Status::make('Status Pengajuan', 'status')
                 ->displayUsing(function ($item) {
