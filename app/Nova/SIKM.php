@@ -52,7 +52,7 @@ class SIKM extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'device', 'name', 'nik', 'phone'
     ];
 
     /**
