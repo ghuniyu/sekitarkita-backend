@@ -15,7 +15,8 @@ class SIKM extends Model
     protected $table = 'sikm';
 
     protected $casts = [
-        'medical_issued' => 'date'
+        'medical_issued' => 'date',
+        'arrival_estimation' => 'datetime',
     ];
 
     public function originable()
