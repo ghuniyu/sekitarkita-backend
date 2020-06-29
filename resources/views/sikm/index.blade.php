@@ -67,7 +67,7 @@
                 <tr>
                     <td>Masa berlaku</td>
                     <td>:</td>
-                    <td>s.d {{$sikm['medical_issued']->addDays(3)->format('d M Y')}}</td>
+                    <td>s.d {{$sikm['medical_issued']->addDays(14)->format('d M Y')}}</td>
                 </tr>
             </table>
             <br>
