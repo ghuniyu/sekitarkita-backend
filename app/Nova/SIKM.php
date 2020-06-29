@@ -4,12 +4,14 @@ namespace App\Nova;
 
 use App\Enums\ChangeRequestStatus;
 use App\Enums\SIKMCategory;
+use App\Enums\Transportation;
 use App\Nova\Actions\ApproveSIKM;
 use App\Nova\Actions\PendingSIKM;
 use App\Nova\Actions\RejectSIKM;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Date;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\File;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
@@ -85,6 +87,12 @@ class SIKM extends Resource
             MorphTo::make(__('Tujuan'), 'destinationable')
                 ->types([Kelurahan::class])
                 ->searchable(),
+            Select::make('Moda Transportasi', 'transportation')
+                ->displayUsingLabels()
+                ->options(Transportation::toSelectArray())
+                ->required(),
+            DateTime::make('Perkiraan Tiba', 'arrival_estimation')
+                ->required(),
             Select::make('Kategori SIKM', 'category')
                 ->displayUsingLabels()
                 ->options(SIKMCategory::toSelectArray())
